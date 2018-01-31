@@ -4,6 +4,7 @@ extern crate opengl_graphics;
 use graphics::*;
 use opengl_graphics::GlGraphics;
 
+pub mod enemy;
 pub mod player;
 
 // Every object that needs to be rendered on screen.
