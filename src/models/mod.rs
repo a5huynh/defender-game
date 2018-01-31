@@ -10,8 +10,10 @@ pub mod player;
 
 // Every object that needs to be rendered on screen.
 pub trait GameObject {
+    // Main draw function for this GameObject.
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics);
-    fn update(&mut self, _: f64) {
-        // By default do nothing in the animation function
-    }
+    // Only call if debug mode is turned on.
+    fn render_dbg(&self, _: &Context, _: &mut GlGraphics) {}
+    // Handle updates to movement/animation/etc.
+    fn update(&mut self, _: f64) {}
 }

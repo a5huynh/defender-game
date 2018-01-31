@@ -22,6 +22,7 @@ const UNIT_MOVE: f64 = 5.0;
 
 struct GameState {
     fire_bullets: bool,
+    debug_mode: bool,
 }
 
 pub struct App {
@@ -52,7 +53,10 @@ impl App {
             20.0
         );
 
-        let state = GameState { fire_bullets: false };
+        let state = GameState {
+            fire_bullets: false,
+            debug_mode: false
+        };
 
         return App {
             window,
@@ -81,6 +85,12 @@ impl App {
                         self.state.fire_bullets = true;
                     }
                 },
+                // Toggle debug mode.
+                Key::D => {
+                    if is_press {
+                        self.state.debug_mode = !self.state.debug_mode;
+                    }
+                },
                 _ => (),
             }
         }
@@ -92,7 +102,7 @@ impl App {
         let bullets = &self.bullets;
         let enemy = &self.enemy;
         let player = &self.player;
-
+        let debug_mode = self.state.debug_mode;
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
@@ -104,6 +114,10 @@ impl App {
             }
             enemy.render(&c, gl);
             player.render(&c, gl);
+
+            if debug_mode {
+                player.render_dbg(&c, gl);
+            }
         });
     }
 

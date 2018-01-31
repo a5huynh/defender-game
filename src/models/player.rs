@@ -43,6 +43,21 @@ impl GameObject for Player {
         rectangle(color::RED, square, transform, gl);
     }
 
+    fn render_dbg(&self, ctxt: &Context, gl: &mut GlGraphics) {
+        // Render collison box
+        let radius = self.radius();
+        let transform = ctxt.transform.trans(self.x, self.y);
+        graphics::circle_arc(
+            color::WHITE,
+            radius,
+            0.0,
+            2.0 * 3.14 * radius,
+            [0.0, 0.0, radius, radius],
+            transform,
+            gl
+        )
+    }
+
     fn update(&mut self, dt: f64) {
         // TODO: Prevent movement outside of boundaries.
         self.x += self.move_x;
