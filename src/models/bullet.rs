@@ -11,13 +11,16 @@ pub struct Bullet {
     pub x: f64,
     pub y: f64,
     pub size: f64,
+    pub ttl: f64,
 }
 
 const BULLET_SIZE: f64 = 5.0;
+// Number of seconds til we can delete this bullet from the screen.
+const BULLET_LIFETIME: f64 = 1.0;
 
 impl Bullet {
     pub fn new(x: f64, y: f64) -> Bullet {
-        return Bullet { x, y, size: BULLET_SIZE };
+        return Bullet { x, y, size: BULLET_SIZE, ttl: BULLET_LIFETIME };
     }
 
     pub fn radius(&self) -> f64 {

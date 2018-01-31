@@ -108,6 +108,7 @@ impl App {
             );
         }
 
+        self.bullets.retain(|bullet| bullet.ttl > 0.0);
         for bullet in self.bullets.iter_mut() {
             bullet.update(args.dt);
         }
