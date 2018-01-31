@@ -61,7 +61,6 @@ impl App {
 
     // Update any animation, etc.
     pub fn update(&mut self, args: &UpdateArgs) {
-        // Rotate 2 radians per second.
-        self.player.rotation += 2.0 * args.dt;
+        self.player.animate(args.dt);
     }
 }

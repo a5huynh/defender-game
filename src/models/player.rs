@@ -19,6 +19,11 @@ impl Player {
         return Player { x, y, size, rotation: 0.0 };
     }
 
+    pub fn animate(&mut self, dt: f64) {
+        // Rotate 2 radians per second.
+        self.rotation += 2.0 * dt;
+    }
+
     pub fn radius(&self) -> f64 {
         return self.size / 2.0;
     }
