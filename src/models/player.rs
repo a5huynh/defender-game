@@ -12,11 +12,18 @@ pub struct Player {
     pub y: f64,
     pub rotation: f64,
     pub size: f64,
+    pub move_x: f64,
+    pub move_y: f64,
 }
 
 impl Player {
     pub fn new(x: f64, y: f64, size: f64) -> Player {
-        return Player { x, y, size, rotation: 0.0 };
+        return Player {
+            x, y, size,
+            rotation: 0.0,
+            move_x: 0.0,
+            move_y: 0.0,
+        };
     }
 
     pub fn radius(&self) -> f64 {
@@ -37,7 +44,8 @@ impl GameObject for Player {
     }
 
     fn update(&mut self, dt: f64) {
-        // Rotate 2 radians per second.
-        self.rotation += 2.0 * dt;
+        // TODO: Prevent movement outside of boundaries.
+        self.x += self.move_x;
+        self.y += self.move_y;
     }
 }

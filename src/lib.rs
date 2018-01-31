@@ -18,7 +18,7 @@ use models::bullet::Bullet;
 use models::enemy::Enemy;
 use models::player::Player;
 
-const UNIT_MOVE: f64 = 10.0;
+const UNIT_MOVE: f64 = 5.0;
 
 struct GameState {
     fire_bullets: bool,
@@ -63,14 +63,24 @@ impl App {
         };
     }
 
-    pub fn input(&mut self, button: &Button) {
+    pub fn input(&mut self, button: &Button, is_press: bool) {
+        // Zeroes out movement is a move button is released.
+        let multiplier = if is_press { 1.0 } else { 0.0 };
+
         if let Button::Keyboard(key) = *button {
             match key {
-                Key::Up => self.player.y -= UNIT_MOVE,
-                Key::Down => self.player.y += UNIT_MOVE,
-                Key::Left => self.player.x -= UNIT_MOVE,
-                Key::Right => self.player.x += UNIT_MOVE,
-                Key::Space => self.state.fire_bullets = true,
+                // TODO: Setup movement as a player state and handle addition
+                // in update?
+                Key::Up => self.player.move_y = -UNIT_MOVE * multiplier,
+                Key::Down => self.player.move_y = UNIT_MOVE * multiplier,
+                Key::Left => self.player.move_x = -UNIT_MOVE * multiplier,
+                Key::Right => self.player.move_x = UNIT_MOVE * multiplier,
+                Key::Space => {
+                    // TODO: Setup a cooldown for firing?
+                    if is_press {
+                        self.state.fire_bullets = true;
+                    }
+                },
                 _ => (),
             }
         }

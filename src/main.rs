@@ -19,7 +19,11 @@ fn main() {
     while let Some(e) = events.next(&mut app.window.settings) {
         // Handle keyboard input
         if let Some(i) = e.press_args() {
-            app.input(&i);
+            app.input(&i, true);
+        }
+
+        if let Some(i) = e.release_args() {
+            app.input(&i, false);
         }
 
         // Handle rendering
