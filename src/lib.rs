@@ -109,8 +109,8 @@ impl App {
         }
 
         for bullet in self.bullets.iter_mut() {
-            bullet.animate(args.dt);
+            bullet.update(args.dt);
         }
-        self.player.animate(args.dt);
+        self.player.update(args.dt);
     }
 }

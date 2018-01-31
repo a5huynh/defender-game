@@ -26,12 +26,13 @@ impl Bullet {
 }
 
 impl GameObject for Bullet {
-    fn animate(&mut self, dt: f64) {
-        self.x += 1.0;
-    }
-
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics) {
         let transform = ctxt.transform.trans(self.x, self.y);
         ellipse(color::WHITE, [0.0, 0.0, self.size, self.size], transform, gl);
+    }
+
+    fn update(&mut self, dt: f64) {
+        self.x += 1.0;
+        self.ttl -= dt;
     }
 }

@@ -25,11 +25,6 @@ impl Player {
 }
 
 impl GameObject for Player {
-    fn animate(&mut self, dt: f64) {
-        // Rotate 2 radians per second.
-        self.rotation += 2.0 * dt;
-    }
-
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics) {
         // Render the player as a little square
         let square = rectangle::square(0.0, 0.0, self.size);
@@ -39,5 +34,10 @@ impl GameObject for Player {
             .trans(-radius, -radius);
 
         rectangle(color::RED, square, transform, gl);
+    }
+
+    fn update(&mut self, dt: f64) {
+        // Rotate 2 radians per second.
+        self.rotation += 2.0 * dt;
     }
 }

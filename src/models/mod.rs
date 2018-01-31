@@ -11,8 +11,7 @@ pub mod player;
 // Every object that needs to be rendered on screen.
 pub trait GameObject {
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics);
-
-    fn animate(&mut self, _: f64) {
+    fn update(&mut self, _: f64) {
         // By default do nothing in the animation function
     }
 }
