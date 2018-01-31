@@ -3,12 +3,12 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
-use graphics::{clear};
+use graphics::clear;
 use piston::input::*;
 use piston::window::Window;
 
+mod color;
 pub mod config;
-use config::GraphicsConfig;
 
 mod models;
 use models::{GameObject};
@@ -16,17 +16,13 @@ use models::player::Player;
 
 const UNIT_MOVE: f64 = 10.0;
 
-const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
-// const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-// const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-
 pub struct App {
-    pub window: GraphicsConfig,
+    pub window: config::GraphicsConfig,
     player: Player,
 }
 
 impl App {
-    pub fn new(window: GraphicsConfig) -> App {
+    pub fn new(window: config::GraphicsConfig) -> App {
         let size = window.settings.size();
 
         let (x, y) = ((size.width / 2) as f64,
@@ -57,7 +53,7 @@ impl App {
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
-            clear(BLACK, gl);
+            clear(color::BLACK, gl);
             // Place object on screen
             player.render(&c, gl);
         });

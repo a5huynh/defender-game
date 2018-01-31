@@ -1,11 +1,11 @@
 extern crate graphics;
 extern crate opengl_graphics;
 
-use graphics::*;
+use graphics::{Context, rectangle, Transformed};
 use opengl_graphics::GlGraphics;
-use super::GameObject;
 
-const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+use color;
+use super::GameObject;
 
 pub struct Player {
     pub x: f64,
@@ -33,6 +33,6 @@ impl GameObject for Player {
             .rot_rad(self.rotation)
             .trans(-radius, -radius);
 
-        rectangle(RED, square, transform, gl);
+        rectangle(color::RED, square, transform, gl);
     }
 }
