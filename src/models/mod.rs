@@ -1,13 +1,12 @@
+extern crate graphics;
+extern crate opengl_graphics;
 
-pub struct Player {
-    pub x: f64,
-    pub y: f64,
-    pub rotation: f64,
-    pub size: f64,
-}
+use graphics::*;
+use opengl_graphics::GlGraphics;
 
-impl Player {
-    pub fn new(x: f64, y: f64, size: f64) -> Player {
-        return Player { x, y, size, rotation: 0.0 };
-    }
+pub mod player;
+
+// Every object that needs to be rendered on screen.
+pub trait GameObject {
+    fn render(&self, ctxt: &Context, gl: &mut GlGraphics);
 }

@@ -1,9 +1,9 @@
-extern crate piston;
-extern crate graphics;
 extern crate glutin_window;
+extern crate graphics;
 extern crate opengl_graphics;
+extern crate piston;
 
-use graphics::{clear, Transformed, rectangle};
+use graphics::{clear};
 use piston::input::*;
 use piston::window::Window;
 
@@ -11,13 +11,14 @@ pub mod config;
 use config::GraphicsConfig;
 
 mod models;
-use models::Player;
+use models::{GameObject};
+use models::player::Player;
 
 const UNIT_MOVE: f64 = 10.0;
 
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
-const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+// const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+// const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
 pub struct App {
     pub window: GraphicsConfig,
@@ -51,29 +52,14 @@ impl App {
 
     // Render stuff on the screen.
     pub fn render(&mut self, args: &RenderArgs) {
-
+        // Grab list of objects to render.
         let player = &self.player;
-
-        let square = rectangle::square(0.0, 0.0, player.size);
-
-        let rotation = self.player.rotation;
-
-        let x = player.x;
-        let y = player.y;
-
+        // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
             clear(BLACK, gl);
-
-            let transform = c.transform.trans(x, y)
-                                .rot_rad(rotation)
-                                .trans(-(player.size / 2.0), -(player.size / 2.0));
-            // let transform = c.transform.trans(x, y)
-            //                            .rot_rad(rotation)
-            //                            .trans(-25.0, -25.0);
-
-            // Draw a box rotating around the middle of the screen.
-            rectangle(RED, square, transform, gl);
+            // Place object on screen
+            player.render(&c, gl);
         });
     }
 

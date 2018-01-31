@@ -16,7 +16,6 @@ fn main() {
 
     // Poll for events from the window.
     let mut events = Events::new(EventSettings::new());
-
     while let Some(e) = events.next(&mut app.window.settings) {
         // Handle keyboard input
         if let Some(i) = e.press_args() {
@@ -32,6 +31,5 @@ fn main() {
         if let Some(u) = e.update_args() {
             app.update(&u);
         }
-
     }
 }
