@@ -4,6 +4,7 @@ extern crate opengl_graphics;
 use graphics::*;
 use opengl_graphics::GlGraphics;
 
+pub mod bullet;
 pub mod enemy;
 pub mod player;
 

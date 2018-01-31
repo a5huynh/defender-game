@@ -14,15 +14,24 @@ pub mod config;
 
 mod models;
 use models::{GameObject};
+use models::bullet::Bullet;
 use models::enemy::Enemy;
 use models::player::Player;
 
 const UNIT_MOVE: f64 = 10.0;
 
+struct GameState {
+    fire_bullets: bool,
+}
+
 pub struct App {
     pub window: config::GraphicsConfig,
     player: Player,
     enemy: Enemy,
+    bullets: Vec<Bullet>,
+
+    // Game-wide events
+    state: GameState,
 }
 
 impl App {
@@ -43,12 +52,14 @@ impl App {
             20.0
         );
 
+        let state = GameState { fire_bullets: false };
 
         return App {
             window,
             player,
             enemy,
             bullets: Vec::new(),
+            state
         };
     }
 
@@ -59,7 +70,7 @@ impl App {
                 Key::Down => self.player.y += UNIT_MOVE,
                 Key::Left => self.player.x -= UNIT_MOVE,
                 Key::Right => self.player.x += UNIT_MOVE,
-                Key::Space => (),
+                Key::Space => self.state.fire_bullets = true,
                 _ => (),
             }
         }
@@ -68,6 +79,7 @@ impl App {
     // Render stuff on the screen.
     pub fn render(&mut self, args: &RenderArgs) {
         // Grab list of objects to render.
+        let bullets = &self.bullets;
         let enemy = &self.enemy;
         let player = &self.player;
 
@@ -77,6 +89,9 @@ impl App {
             clear(color::BLACK, gl);
 
             // Render objects
+            for bullet in bullets.iter() {
+                bullet.render(&c, gl);
+            }
             enemy.render(&c, gl);
             player.render(&c, gl);
         });
@@ -85,6 +100,17 @@ impl App {
     // Update any animation, etc.
     // dt is the delta since the last update.
     pub fn update(&mut self, args: &UpdateArgs) {
+        // Handle game events
+        if self.state.fire_bullets {
+            self.state.fire_bullets = false;
+            self.bullets.push(
+                Bullet::new(self.player.x, self.player.y)
+            );
+        }
+
+        for bullet in self.bullets.iter_mut() {
+            bullet.animate(args.dt);
+        }
         self.player.animate(args.dt);
     }
 }
