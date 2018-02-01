@@ -1,7 +1,7 @@
 extern crate graphics;
 extern crate opengl_graphics;
 
-use graphics::{Context, rectangle, Transformed};
+use graphics::{Context, line, rectangle, Transformed};
 use opengl_graphics::GlGraphics;
 
 use color;
@@ -27,6 +27,7 @@ impl Player {
 }
 
 impl GameObject for Player {
+    fn position(&self) -> &geom::Position { &self.pos }
     fn radius(&self) -> f64 { self.size / 2.0 }
 
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics) {

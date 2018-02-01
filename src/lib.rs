@@ -137,6 +137,10 @@ impl App {
         for bullet in self.bullets.iter_mut() {
             // Animate bullet
             bullet.update(args.dt);
+            // Did bullet collide with enemy?
+            if bullet.collides(&self.enemy) {
+                println!("ENEMY HIT!");
+            }
         }
         // Remove bullets that have outlived their TTL
         self.bullets.retain(|bullet| bullet.ttl > 0.0);

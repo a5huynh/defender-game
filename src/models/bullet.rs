@@ -16,7 +16,7 @@ pub struct Bullet {
 
 const BULLET_SIZE: f64 = 5.0;
 // Number of seconds til we can delete this bullet from the screen.
-const BULLET_LIFETIME: f64 = 1.0;
+const BULLET_LIFETIME: f64 = 2.0;
 
 impl Bullet {
     pub fn new(x: f64, y: f64) -> Bullet {
@@ -33,6 +33,9 @@ impl Bullet {
 }
 
 impl GameObject for Bullet {
+    fn position(&self) -> &geom::Position { &self.pos }
+    fn radius(&self) -> f64 { BULLET_SIZE }
+
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics) {
         let transform = ctxt.transform.trans(self.pos.x, self.pos.y);
         let radius = self.radius();
