@@ -11,6 +11,7 @@ use rand::Rng;
 
 mod color;
 pub mod config;
+mod geom;
 
 mod models;
 use models::{GameObject};
@@ -128,14 +129,17 @@ impl App {
         if self.state.fire_bullets {
             self.state.fire_bullets = false;
             self.bullets.push(
-                Bullet::new(self.player.x, self.player.y)
+                Bullet::new(self.player.pos.x, self.player.pos.y)
             );
         }
 
-        self.bullets.retain(|bullet| bullet.ttl > 0.0);
         for bullet in self.bullets.iter_mut() {
+            // Animate bullet
             bullet.update(args.dt);
         }
+        // Remove bullets that have outlived their TTL
+        self.bullets.retain(|bullet| bullet.ttl > 0.0);
+
         self.player.update(args.dt);
     }
 }

@@ -5,11 +5,11 @@ use graphics::{Context, ellipse, Transformed};
 use opengl_graphics::GlGraphics;
 
 use color;
+use geom;
 use super::GameObject;
 
 pub struct Bullet {
-    pub x: f64,
-    pub y: f64,
+    pub pos: geom::Position,
     pub size: f64,
     pub ttl: f64,
 }
@@ -20,7 +20,11 @@ const BULLET_LIFETIME: f64 = 1.0;
 
 impl Bullet {
     pub fn new(x: f64, y: f64) -> Bullet {
-        return Bullet { x, y, size: BULLET_SIZE, ttl: BULLET_LIFETIME };
+        return Bullet {
+            pos: geom::Position::new(x, y),
+            size: BULLET_SIZE,
+            ttl: BULLET_LIFETIME
+        };
     }
 
     pub fn radius(&self) -> f64 {
@@ -30,12 +34,13 @@ impl Bullet {
 
 impl GameObject for Bullet {
     fn render(&self, ctxt: &Context, gl: &mut GlGraphics) {
-        let transform = ctxt.transform.trans(self.x, self.y);
-        ellipse(color::WHITE, [0.0, 0.0, self.size, self.size], transform, gl);
+        let transform = ctxt.transform.trans(self.pos.x, self.pos.y);
+        let radius = self.radius();
+        ellipse(color::WHITE, [0.0, 0.0, radius, radius], transform, gl);
     }
 
     fn update(&mut self, dt: f64) {
-        self.x += 1.0;
+        self.pos.x += 1.0;
         self.ttl -= dt;
     }
 }
