@@ -1,9 +1,6 @@
-extern crate graphics;
-extern crate opengl_graphics;
-extern crate rand;
-
 use graphics::{Context, rectangle, Transformed};
 use opengl_graphics::GlGraphics;
+use rand;
 use rand::Rng;
 
 use color;
@@ -30,6 +27,13 @@ impl Enemy {
             pos: geom::Position::new(x, y),
             size: ENEMY_RADIUS * 2.0,
         };
+    }
+
+    pub fn new_rand(max_x: f64, max_y: f64) -> Enemy {
+        let mut rng = rand::thread_rng();
+        let randx = rng.gen_range(0.0, max_x);
+        let randy = rng.gen_range(0.0, max_y);
+        return Enemy::new(randx, randy);
     }
 }
 

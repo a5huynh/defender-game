@@ -7,7 +7,6 @@ extern crate rand;
 use opengl_graphics::{GlyphCache, TextureSettings};
 use piston::input::*;
 use piston::window::Window;
-use rand::Rng;
 
 mod color;
 pub mod config;
@@ -195,18 +194,18 @@ impl<'a> App<'a> {
         self.player.update(args.dt);
         // If number of enemies is zero... spawn more!
         if self.enemies.len() == 0 {
-            // Choose a random spot in the window to render the enemy.
-            let mut rng = rand::thread_rng();
             let size = self.window.settings.size();
             for _ in 0..10 {
-                let randx = rng.gen_range(0.0, size.width as f64);
-                let randy = rng.gen_range(0.0, size.height as f64);
-                self.enemies.push(Enemy::new(randx, randy));
+                self.enemies.push(Enemy::new_rand(size.width as f64, size.height as f64));
             }
         }
 
         for enemy in self.enemies.iter_mut() {
             enemy.update(args.dt);
+            // If the player collides with an enemy, game over!
+            if enemy.collides(&self.player) {
+                self.state.game_status = GameStatus::Died;
+            }
         }
         // Did we kill all the enemies?
         if self.score == 100 {
