@@ -20,10 +20,13 @@ use models::enemy::Enemy;
 use models::player::Player;
 
 const UNIT_MOVE: f64 = 5.0;
+const FIRE_COOLDOWN: f64 = 0.1; // Only allow user to shoot 10 bullets/sec.
 
 struct GameState {
     debug_mode: bool,
+    // User shooting state
     fire_bullets: bool,
+    fire_cooldown: f64,
 }
 
 pub struct App {
@@ -56,7 +59,8 @@ impl App {
 
         let state = GameState {
             fire_bullets: false,
-            debug_mode: false
+            debug_mode: false,
+            fire_cooldown: 0.0,
         };
 
         return App {
@@ -83,7 +87,8 @@ impl App {
                 Key::Space => {
                     // TODO: Setup a cooldown for firing? so we can just hold
                     // down the space button?
-                    if is_press {
+                    if is_press && self.state.fire_cooldown <= 0.0 {
+                        self.state.fire_cooldown = FIRE_COOLDOWN;
                         self.state.fire_bullets = true;
                     }
                 },
@@ -128,7 +133,12 @@ impl App {
     // dt is the delta since the last update.
     pub fn update(&mut self, args: &UpdateArgs) {
         // Handle game events
+        if self.state.fire_cooldown > 0.0 {
+            self.state.fire_cooldown -= args.dt;
+        }
+
         if self.state.fire_bullets {
+
             self.state.fire_bullets = false;
             self.bullets.push(
                 Bullet::new(self.player.pos.x, self.player.pos.y)
@@ -136,7 +146,6 @@ impl App {
         }
 
         for bullet in self.bullets.iter_mut() {
-            // Animate bullet
             bullet.update(args.dt);
             // Did bullet collide with enemy?
             if bullet.collides(&self.enemy) {
