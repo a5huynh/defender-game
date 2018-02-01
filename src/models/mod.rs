@@ -1,6 +1,3 @@
-extern crate graphics;
-extern crate opengl_graphics;
-
 use graphics::*;
 use opengl_graphics::GlGraphics;
 
@@ -16,7 +13,7 @@ pub trait GameObject {
     fn collides(&self, other: &GameObject) -> bool {
         // Two circles intersect if the distance between their centers is
         // between the sum and the difference of their radii.
-        // TODO: Bounding boxes would probably be more efficient...
+        // TODO: Bounding boxes might be more efficient.
         let x2 = self.position().x - other.position().x;
         let y2 = self.position().y - other.position().y;
         let sum = x2.powf(2.0) + y2.powf(2.0);

@@ -129,7 +129,7 @@ impl<'a> App<'a> {
             use graphics::*;
 
             // Clear the screen.
-            clear(color::BLACK, gl);
+            clear(::color::BLACK, gl);
             // Render the current score
             text::Text::new_color([1.0, 1.0, 1.0, 1.0], 16)
                 .draw(

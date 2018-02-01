@@ -1,6 +1,3 @@
-extern crate graphics;
-extern crate opengl_graphics;
-
 use graphics::{Context, rectangle, polygon, Transformed};
 use opengl_graphics::GlGraphics;
 

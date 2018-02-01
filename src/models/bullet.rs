@@ -1,6 +1,3 @@
-extern crate graphics;
-extern crate opengl_graphics;
-
 use graphics::{Context, ellipse, Transformed};
 use opengl_graphics::GlGraphics;
 
@@ -17,7 +14,8 @@ pub struct Bullet {
 
 const BULLET_SPEED: f64 = 2.0;
 const BULLET_SIZE: f64 = 5.0;
-// Number of seconds til we can delete this bullet from the screen.
+// Number of seconds til we can delete this bullet from the screen (if it hasn't
+// collided with an enemy yet).
 const BULLET_LIFETIME: f64 = 2.0;
 
 impl Bullet {
@@ -47,6 +45,7 @@ impl GameObject for Bullet {
 
     fn update(&mut self, dt: f64) {
         self.ttl -= dt;
+        // Move the bullet in the direction the player was facing.
         match self.dir {
             geom::Direction::EAST => self.pos.x += BULLET_SPEED,
             geom::Direction::NORTH => self.pos.y -= BULLET_SPEED,
