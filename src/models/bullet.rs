@@ -14,6 +14,7 @@ pub struct Bullet {
     pub ttl: f64,
 }
 
+const BULLET_SPEED: f64 = 2.0;
 const BULLET_SIZE: f64 = 5.0;
 // Number of seconds til we can delete this bullet from the screen.
 const BULLET_LIFETIME: f64 = 2.0;
@@ -43,7 +44,7 @@ impl GameObject for Bullet {
     }
 
     fn update(&mut self, dt: f64) {
-        self.pos.x += 1.0;
+        self.pos.x += BULLET_SPEED;
         self.ttl -= dt;
     }
 }
