@@ -90,6 +90,7 @@ impl App {
                 Key::D => {
                     if is_press {
                         self.state.debug_mode = !self.state.debug_mode;
+                        println!("Debug mode: {}", self.state.debug_mode);
                     }
                 },
                 _ => (),
@@ -141,5 +142,6 @@ impl App {
         self.bullets.retain(|bullet| bullet.ttl > 0.0);
 
         self.player.update(args.dt);
+        self.enemy.update(args.dt);
     }
 }
