@@ -5,23 +5,21 @@ use color;
 use geom;
 use super::GameObject;
 
-const PLAYER_MOVE: f64 = 5.0;
+const PLAYER_SPEED: f64 = 5.0;
 const PLAYER_SIZE: f64 = 20.0;
 
 pub struct Player {
     pub pos: geom::Position,
     pub dir: geom::Direction,
     pub size: f64,
-    pub move_x: f64,
-    pub move_y: f64,
+    pub move_dir: Option<geom::Direction>,
 }
 
 impl Player {
     pub fn new(x: f64, y: f64) -> Player {
         return Player {
             dir: geom::Direction::EAST,
-            move_x: 0.0,
-            move_y: 0.0,
+            move_dir: None,
             pos: geom::Position::new(x, y),
             size: PLAYER_SIZE,
         };
@@ -78,20 +76,19 @@ impl GameObject for Player {
         circle.draw([0.0, 0.0, diam, diam], &ctxt.draw_state, transform, gl);
     }
 
-    fn update(&mut self, dt: f64) {
+    fn update(&mut self, _: f64) {
         // TODO: Prevent movement outside of boundaries.
-        self.pos.x += self.move_x;
-        if self.move_x < 0.0 {
-            self.dir = geom::Direction::WEST;
-        } else if self.move_x > 0.0 {
-            self.dir = geom::Direction::EAST;
-        }
-
-        self.pos.y += self.move_y;
-        if self.move_y < 0.0 {
-            self.dir = geom::Direction::NORTH;
-        } else if self.move_y > 0.0 {
-            self.dir = geom::Direction::SOUTH;
+        match self.move_dir {
+            Some(dir) => {
+                self.dir = dir;
+                match self.dir {
+                    geom::Direction::EAST => self.pos.x += PLAYER_SPEED,
+                    geom::Direction::NORTH => self.pos.y -= PLAYER_SPEED,
+                    geom::Direction::WEST => self.pos.x -= PLAYER_SPEED,
+                    geom::Direction::SOUTH => self.pos.y += PLAYER_SPEED,
+                }
+            },
+            _ => (),
         }
 
     }

@@ -18,7 +18,6 @@ use models::bullet::Bullet;
 use models::enemy::Enemy;
 use models::player::Player;
 
-const UNIT_MOVE: f64 = 5.0;
 const FIRE_COOLDOWN: f64 = 0.1; // Only allow user to shoot 10 bullets/sec.
 
 enum GameStatus {
@@ -83,33 +82,43 @@ impl<'a> App<'a> {
     }
 
     pub fn input(&mut self, button: &Button, is_press: bool) {
-        // Zeroes out movement is a move button is released.
-        let multiplier = if is_press { 1.0 } else { 0.0 };
-
-        if let Button::Keyboard(key) = *button {
-            match key {
-                // TODO: Setup movement as a player state and handle addition
-                // in update?
-                Key::Up => self.player.move_y = -UNIT_MOVE * multiplier,
-                Key::Down => self.player.move_y = UNIT_MOVE * multiplier,
-                Key::Left => self.player.move_x = -UNIT_MOVE * multiplier,
-                Key::Right => self.player.move_x = UNIT_MOVE * multiplier,
-                Key::Space => {
-                    // TODO: Setup a cooldown for firing? so we can just hold
-                    // down the space button?
-                    if is_press && self.state.fire_cooldown <= 0.0 {
-                        self.state.fire_cooldown = FIRE_COOLDOWN;
-                        self.state.fire_bullets = true;
-                    }
-                },
-                // Toggle debug mode.
-                Key::D => {
-                    if is_press {
+        if is_press {
+            if let Button::Keyboard(key) = *button {
+                match key {
+                    Key::Up => self.player.move_dir = Some(geom::Direction::NORTH),
+                    Key::Down => self.player.move_dir = Some(geom::Direction::SOUTH),
+                    Key::Left => self.player.move_dir = Some(geom::Direction::WEST),
+                    Key::Right => self.player.move_dir = Some(geom::Direction::EAST),
+                    Key::Space => {
+                        if self.state.fire_cooldown <= 0.0 {
+                            self.state.fire_cooldown = FIRE_COOLDOWN;
+                            self.state.fire_bullets = true;
+                        }
+                    },
+                    // Toggle debug mode.
+                    Key::D => {
                         self.state.debug_mode = !self.state.debug_mode;
                         println!("Debug mode: {}", self.state.debug_mode);
-                    }
-                },
-                _ => (),
+                    },
+                    _ => (),
+                }
+            }
+        } else {
+            if let Button::Keyboard(key) = *button {
+                match key {
+                    Key::Up => self.player.move_dir = None,
+                    Key::Down => self.player.move_dir = None,
+                    Key::Left => self.player.move_dir = None,
+                    Key::Right => self.player.move_dir = None,
+                    // Toggle debug mode.
+                    Key::D => {
+                        if is_press {
+                            self.state.debug_mode = !self.state.debug_mode;
+                            println!("Debug mode: {}", self.state.debug_mode);
+                        }
+                    },
+                    _ => (),
+                }
             }
         }
     }
