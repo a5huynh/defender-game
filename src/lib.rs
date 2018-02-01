@@ -22,8 +22,8 @@ use models::player::Player;
 const UNIT_MOVE: f64 = 5.0;
 
 struct GameState {
-    fire_bullets: bool,
     debug_mode: bool,
+    fire_bullets: bool,
 }
 
 pub struct App {
@@ -81,7 +81,8 @@ impl App {
                 Key::Left => self.player.move_x = -UNIT_MOVE * multiplier,
                 Key::Right => self.player.move_x = UNIT_MOVE * multiplier,
                 Key::Space => {
-                    // TODO: Setup a cooldown for firing?
+                    // TODO: Setup a cooldown for firing? so we can just hold
+                    // down the space button?
                     if is_press {
                         self.state.fire_bullets = true;
                     }
@@ -139,12 +140,14 @@ impl App {
             bullet.update(args.dt);
             // Did bullet collide with enemy?
             if bullet.collides(&self.enemy) {
-                println!("ENEMY HIT!");
+                // Destroy bullet
+                bullet.ttl = 0.0;
             }
         }
         // Remove bullets that have outlived their TTL
         self.bullets.retain(|bullet| bullet.ttl > 0.0);
 
+        // Update player & enemies
         self.player.update(args.dt);
         self.enemy.update(args.dt);
     }
