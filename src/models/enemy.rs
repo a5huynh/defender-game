@@ -13,19 +13,22 @@ use super::GameObject;
 // The max movement of the enemy in a rando direction.
 const MOVE_RADIUS: f64 = 5.0;
 const MOVE_TTL: f64 = 0.1; // 100 millisecond
+const ENEMY_RADIUS: f64 = 10.0;
 
 pub struct Enemy {
+    pub health: u32,
     pub pos: geom::Position,
     pub size: f64,
     move_ttl: f64,
 }
 
 impl Enemy {
-    pub fn new(x: f64, y: f64, size: f64) -> Enemy {
+    pub fn new(x: f64, y: f64) -> Enemy {
         return Enemy {
-            size,
+            health: 1,
+            move_ttl: MOVE_TTL,
             pos: geom::Position::new(x, y),
-            move_ttl: MOVE_TTL
+            size: ENEMY_RADIUS * 2.0,
         };
     }
 }

@@ -32,7 +32,7 @@ struct GameState {
 pub struct App {
     pub window: config::GraphicsConfig,
     player: Player,
-    enemy: Enemy,
+    enemies: Vec<Enemy>,
     bullets: Vec<Bullet>,
 
     // Game-wide events
@@ -48,15 +48,6 @@ impl App {
 
         let player = Player::new(x, y, 20.0);
 
-        // Choose a random spot in the window to render the enemy.
-        let mut rng = rand::thread_rng();
-
-        let enemy = Enemy::new(
-            rng.gen_range(0.0, size.width as f64),
-            rng.gen_range(0.0, size.height as f64),
-            20.0
-        );
-
         let state = GameState {
             fire_bullets: false,
             debug_mode: false,
@@ -64,11 +55,12 @@ impl App {
         };
 
         return App {
-            window,
             player,
-            enemy,
+            state,
+            window,
             bullets: Vec::new(),
-            state
+            enemies: Vec::new(),
+            score: 0,
         };
     }
 
@@ -108,9 +100,10 @@ impl App {
     pub fn render(&mut self, args: &RenderArgs) {
         // Grab list of objects to render.
         let bullets = &self.bullets;
-        let enemy = &self.enemy;
+        let enemies = &self.enemies;
         let player = &self.player;
         let debug_mode = self.state.debug_mode;
+
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
@@ -120,7 +113,11 @@ impl App {
             for bullet in bullets.iter() {
                 bullet.render(&c, gl);
             }
+
+            for enemy in enemies.iter() {
             enemy.render(&c, gl);
+            }
+
             player.render(&c, gl);
 
             if debug_mode {
@@ -138,7 +135,6 @@ impl App {
         }
 
         if self.state.fire_bullets {
-
             self.state.fire_bullets = false;
             self.bullets.push(
                 Bullet::new(self.player.pos.x, self.player.pos.y)
@@ -147,17 +143,36 @@ impl App {
 
         for bullet in self.bullets.iter_mut() {
             bullet.update(args.dt);
-            // Did bullet collide with enemy?
-            if bullet.collides(&self.enemy) {
+            // Did bullet collide with any enemies
+            for enemy in self.enemies.iter_mut() {
+                if bullet.collides(enemy) {
                 // Destroy bullet
                 bullet.ttl = 0.0;
+                    // Destroy enemy
+                    enemy.health -= 1;
+                    self.score += 10;
+                }
             }
         }
         // Remove bullets that have outlived their TTL
         self.bullets.retain(|bullet| bullet.ttl > 0.0);
-
+        self.enemies.retain(|enemy| enemy.health > 0);
         // Update player & enemies
         self.player.update(args.dt);
-        self.enemy.update(args.dt);
+        // If number of enemies is zero... spawn more!
+        if self.enemies.len() == 0 {
+            // Choose a random spot in the window to render the enemy.
+            let mut rng = rand::thread_rng();
+            let size = self.window.settings.size();
+            for _ in 0..10 {
+                let randx = rng.gen_range(0.0, size.width as f64);
+                let randy = rng.gen_range(0.0, size.height as f64);
+                self.enemies.push(Enemy::new(randx, randy));
+            }
+        }
+
+        for enemy in self.enemies.iter_mut() {
+            enemy.update(args.dt);
+        }
     }
 }
