@@ -10,6 +10,7 @@ use super::GameObject;
 
 pub struct Bullet {
     pub pos: geom::Position,
+    pub dir: geom::Direction,
     pub size: f64,
     pub ttl: f64,
 }
@@ -20,8 +21,9 @@ const BULLET_SIZE: f64 = 5.0;
 const BULLET_LIFETIME: f64 = 2.0;
 
 impl Bullet {
-    pub fn new(x: f64, y: f64) -> Bullet {
+    pub fn new(x: f64, y: f64, dir: geom::Direction) -> Bullet {
         return Bullet {
+            dir,
             pos: geom::Position::new(x, y),
             size: BULLET_SIZE,
             ttl: BULLET_LIFETIME
@@ -44,7 +46,12 @@ impl GameObject for Bullet {
     }
 
     fn update(&mut self, dt: f64) {
-        self.pos.x += BULLET_SPEED;
         self.ttl -= dt;
+        match self.dir {
+            geom::Direction::EAST => self.pos.x += BULLET_SPEED,
+            geom::Direction::NORTH => self.pos.y -= BULLET_SPEED,
+            geom::Direction::WEST => self.pos.x -= BULLET_SPEED,
+            geom::Direction::SOUTH => self.pos.y += BULLET_SPEED,
+        }
     }
 }

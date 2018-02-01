@@ -58,7 +58,7 @@ impl App {
         let (x, y) = ((size.width / 2) as f64,
                       (size.height / 2) as f64);
 
-        let player = Player::new(x, y, 20.0);
+        let player = Player::new(x, y);
 
         let state = GameState {
             debug_mode: false,
@@ -150,7 +150,7 @@ impl App {
         if self.state.fire_bullets {
             self.state.fire_bullets = false;
             self.bullets.push(
-                Bullet::new(self.player.pos.x, self.player.pos.y)
+                Bullet::new(self.player.pos.x, self.player.pos.y, self.player.dir)
             );
         }
 
