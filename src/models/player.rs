@@ -3,26 +3,52 @@ use opengl_graphics::GlGraphics;
 
 use color;
 use geom;
+use geom::Direction;
 use super::GameObject;
 
-const PLAYER_SPEED: f64 = 5.0;
+const PLAYER_SPEED: f64 = 2.0;
 const PLAYER_SIZE: f64 = 20.0;
+// Drift for this long after movement key is released.
+// You don't came to a hard stop in space!
+const PLAYER_DRIFT: f64 = 0.2;
 
 pub struct Player {
     pub pos: geom::Position,
-    pub dir: geom::Direction,
+    pub dir: Direction,
     pub size: f64,
-    pub move_dir: Option<geom::Direction>,
+    pub drift_ttl: f64,
+    move_offset: geom::Position,
 }
 
 impl Player {
     pub fn new(x: f64, y: f64) -> Player {
         return Player {
-            dir: geom::Direction::EAST,
-            move_dir: None,
+            dir: Direction::EAST,
+            drift_ttl: 0.0,
+            move_offset: geom::Position::new(0.0, 0.0),
             pos: geom::Position::new(x, y),
             size: PLAYER_SIZE,
         };
+    }
+
+    pub fn start_move(&mut self, dir: Direction) {
+        self.dir = dir;
+        match dir {
+            Direction::WEST => self.move_offset.x = -PLAYER_SPEED,
+            Direction::NORTH => self.move_offset.y = -PLAYER_SPEED,
+            Direction::EAST => self.move_offset.x = PLAYER_SPEED,
+            Direction::SOUTH => self.move_offset.y = PLAYER_SPEED,
+        }
+    }
+
+    pub fn stop_move(&mut self, dir: Direction) {
+        self.drift_ttl = PLAYER_DRIFT;
+        match dir {
+            Direction::WEST => self.move_offset.x = 0.0,
+            Direction::NORTH => self.move_offset.y = 0.0,
+            Direction::EAST => self.move_offset.x = 0.0,
+            Direction::SOUTH => self.move_offset.y = 0.0,
+        }
     }
 }
 
@@ -36,10 +62,10 @@ impl GameObject for Player {
 
         // Rotate the player to the direction they're facing
         let dir = match self.dir {
-            geom::Direction::WEST => 0.0,
-            geom::Direction::NORTH => 90.0,
-            geom::Direction::EAST => 180.0,
-            geom::Direction::SOUTH => 270.0,
+            Direction::WEST => 0.0,
+            Direction::NORTH => 90.0,
+            Direction::EAST => 180.0,
+            Direction::SOUTH => 270.0,
         };
 
         let radius = self.radius();
@@ -76,20 +102,20 @@ impl GameObject for Player {
         circle.draw([0.0, 0.0, diam, diam], &ctxt.draw_state, transform, gl);
     }
 
-    fn update(&mut self, _: f64) {
+    fn update(&mut self, dt: f64) {
         // TODO: Prevent movement outside of boundaries.
-        match self.move_dir {
-            Some(dir) => {
-                self.dir = dir;
-                match self.dir {
-                    geom::Direction::EAST => self.pos.x += PLAYER_SPEED,
-                    geom::Direction::NORTH => self.pos.y -= PLAYER_SPEED,
-                    geom::Direction::WEST => self.pos.x -= PLAYER_SPEED,
-                    geom::Direction::SOUTH => self.pos.y += PLAYER_SPEED,
-                }
-            },
-            _ => (),
-        }
+        self.pos.x += self.move_offset.x;
+        self.pos.y += self.move_offset.y;
 
+        if self.drift_ttl > 0.0 {
+            self.drift_ttl -= dt;
+            let drift_speed = PLAYER_SPEED / 2.0;
+            match self.dir {
+                Direction::NORTH => self.pos.y -= drift_speed,
+                Direction::EAST => self.pos.x += drift_speed,
+                Direction::SOUTH => self.pos.y += drift_speed,
+                Direction::WEST => self.pos.x -= drift_speed,
+            }
+        }
     }
 }

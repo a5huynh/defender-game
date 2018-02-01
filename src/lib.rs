@@ -85,10 +85,10 @@ impl<'a> App<'a> {
         if is_press {
             if let Button::Keyboard(key) = *button {
                 match key {
-                    Key::Up => self.player.move_dir = Some(geom::Direction::NORTH),
-                    Key::Down => self.player.move_dir = Some(geom::Direction::SOUTH),
-                    Key::Left => self.player.move_dir = Some(geom::Direction::WEST),
-                    Key::Right => self.player.move_dir = Some(geom::Direction::EAST),
+                    Key::Up => self.player.start_move(geom::Direction::NORTH),
+                    Key::Down => self.player.start_move(geom::Direction::SOUTH),
+                    Key::Left => self.player.start_move(geom::Direction::WEST),
+                    Key::Right => self.player.start_move(geom::Direction::EAST),
                     Key::Space => {
                         if self.state.fire_cooldown <= 0.0 {
                             self.state.fire_cooldown = FIRE_COOLDOWN;
@@ -106,10 +106,12 @@ impl<'a> App<'a> {
         } else {
             if let Button::Keyboard(key) = *button {
                 match key {
-                    Key::Up => self.player.move_dir = None,
-                    Key::Down => self.player.move_dir = None,
-                    Key::Left => self.player.move_dir = None,
-                    Key::Right => self.player.move_dir = None,
+                    // TODO: Can't do this because stop move on keyup may
+                    // cancel keydown on another key.
+                    Key::Up => self.player.stop_move(geom::Direction::NORTH),
+                    Key::Down => self.player.stop_move(geom::Direction::SOUTH),
+                    Key::Left => self.player.stop_move(geom::Direction::WEST),
+                    Key::Right => self.player.stop_move(geom::Direction::EAST),
                     // Toggle debug mode.
                     Key::D => {
                         if is_press {
@@ -140,7 +142,7 @@ impl<'a> App<'a> {
             // Clear the screen.
             clear(::color::BLACK, gl);
             // Render the current score
-            text::Text::new_color([1.0, 1.0, 1.0, 1.0], 16)
+            text::Text::new_color(::color::WHITE, 12)
                 .draw(
                     format!("Score: {}", score).as_str(),
                     glyph_cache,
