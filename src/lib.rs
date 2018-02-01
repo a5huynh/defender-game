@@ -22,8 +22,19 @@ use models::player::Player;
 const UNIT_MOVE: f64 = 5.0;
 const FIRE_COOLDOWN: f64 = 0.1; // Only allow user to shoot 10 bullets/sec.
 
+enum GameStatus {
+    // Normal fighting mode
+    Normal,
+    // Player died
+    Died,
+    // Player won!
+    Win
+}
+
 struct GameState {
     debug_mode: bool,
+    // Overall game state
+    game_status: GameStatus,
     // User shooting state
     fire_bullets: bool,
     fire_cooldown: f64,
@@ -34,7 +45,8 @@ pub struct App {
     player: Player,
     enemies: Vec<Enemy>,
     bullets: Vec<Bullet>,
-
+    // Player score
+    score: u32,
     // Game-wide events
     state: GameState,
 }
@@ -49,9 +61,10 @@ impl App {
         let player = Player::new(x, y, 20.0);
 
         let state = GameState {
-            fire_bullets: false,
             debug_mode: false,
+            fire_bullets: false,
             fire_cooldown: 0.0,
+            game_status: GameStatus::Normal
         };
 
         return App {
@@ -115,7 +128,7 @@ impl App {
             }
 
             for enemy in enemies.iter() {
-            enemy.render(&c, gl);
+                enemy.render(&c, gl);
             }
 
             player.render(&c, gl);
@@ -146,8 +159,8 @@ impl App {
             // Did bullet collide with any enemies
             for enemy in self.enemies.iter_mut() {
                 if bullet.collides(enemy) {
-                // Destroy bullet
-                bullet.ttl = 0.0;
+                    // Destroy bullet
+                    bullet.ttl = 0.0;
                     // Destroy enemy
                     enemy.health -= 1;
                     self.score += 10;
@@ -173,6 +186,10 @@ impl App {
 
         for enemy in self.enemies.iter_mut() {
             enemy.update(args.dt);
+        }
+        // Did we kill all the enemies?
+        if self.score == 100 {
+            self.state.game_status = GameStatus::Win;
         }
     }
 }
