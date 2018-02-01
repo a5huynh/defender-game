@@ -4,7 +4,7 @@ extern crate opengl_graphics;
 extern crate piston;
 extern crate rand;
 
-use graphics::clear;
+use opengl_graphics::{GlyphCache, TextureSettings};
 use piston::input::*;
 use piston::window::Window;
 use rand::Rng;
@@ -40,8 +40,9 @@ struct GameState {
     fire_cooldown: f64,
 }
 
-pub struct App {
+pub struct App<'a> {
     pub window: config::GraphicsConfig,
+    glyph_cache: GlyphCache<'a>,
     player: Player,
     enemies: Vec<Enemy>,
     bullets: Vec<Bullet>,
@@ -51,8 +52,8 @@ pub struct App {
     state: GameState,
 }
 
-impl App {
-    pub fn new(window: config::GraphicsConfig) -> App {
+impl<'a> App<'a> {
+    pub fn new(window: config::GraphicsConfig) -> App<'a> {
         let size = window.settings.size();
 
         let (x, y) = ((size.width / 2) as f64,
@@ -67,7 +68,12 @@ impl App {
             game_status: GameStatus::Normal
         };
 
+        // Load font(s) used in the game.
+        let glyph_cache = GlyphCache::new("./assets/fonts/PxPlus_IBM_VGA8.ttf", (), TextureSettings::new())
+            .expect("Unable to load font");
+
         return App {
+            glyph_cache,
             player,
             state,
             window,
@@ -116,11 +122,26 @@ impl App {
         let enemies = &self.enemies;
         let player = &self.player;
         let debug_mode = self.state.debug_mode;
+        let glyph_cache = &mut self.glyph_cache;
+        let score = self.score;
 
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
+            use graphics::*;
+
             // Clear the screen.
             clear(color::BLACK, gl);
+            // Render the current score
+            text::Text::new_color([1.0, 1.0, 1.0, 1.0], 16)
+                .draw(
+                    format!("Score: {}", score).as_str(),
+                    glyph_cache,
+                    &DrawState::default(),
+                    // Top left is (0.0, 0.0). Doesn't include the height
+                    // of the text either.
+                    c.transform.trans(0.0, 16.0),
+                    gl
+                ).unwrap();
 
             // Render objects
             for bullet in bullets.iter() {
