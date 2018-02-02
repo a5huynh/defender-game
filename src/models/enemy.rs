@@ -5,6 +5,7 @@ use rand::Rng;
 
 use color;
 use geom;
+use piston::window::Size;
 use super::GameObject;
 
 // The max movement of the enemy in a rando direction.
@@ -65,14 +66,23 @@ impl GameObject for Enemy {
         circle.draw([0.0, 0.0, diam, diam], &ctxt.draw_state, transform, gl);
     }
 
-    fn update(&mut self, dt: f64) {
+    fn update(&mut self, dt: f64, size: Size) {
         // Only move every <MOVE_TTL> seconds.
         self.move_ttl -= dt;
         if self.move_ttl <= 0.0 {
             // Randomly move in a random direction.
+            let radius = self.radius();
             let mut rng = rand::thread_rng();
+
             self.pos.x += rng.gen_range(0.0, MOVE_RADIUS * 2.0) - MOVE_RADIUS;
             self.pos.y += rng.gen_range(0.0, MOVE_RADIUS * 2.0) - MOVE_RADIUS;
+
+            geom::restrict_to_bounds(
+                &mut self.pos,
+                [radius, radius, size.width as f64, size.height as f64]
+            );
+
+            // Don't move outside the bounds of the window.
             self.move_ttl = MOVE_TTL;
         }
     }

@@ -3,6 +3,7 @@ use opengl_graphics::GlGraphics;
 
 use color;
 use geom;
+use piston::window::Size;
 use super::GameObject;
 
 pub struct Bullet {
@@ -43,7 +44,7 @@ impl GameObject for Bullet {
         ellipse(color::WHITE, [0.0, 0.0, radius, radius], transform, gl);
     }
 
-    fn update(&mut self, dt: f64) {
+    fn update(&mut self, dt: f64, _: Size) {
         self.ttl -= dt;
         // Move the bullet in the direction the player was facing.
         match self.dir {

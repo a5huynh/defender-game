@@ -4,6 +4,7 @@ use opengl_graphics::GlGraphics;
 use color;
 use geom;
 use geom::Direction;
+use piston::window::Size;
 use super::GameObject;
 
 const PLAYER_SPEED: f64 = 2.0;
@@ -102,8 +103,10 @@ impl GameObject for Player {
         circle.draw([0.0, 0.0, diam, diam], &ctxt.draw_state, transform, gl);
     }
 
-    fn update(&mut self, dt: f64) {
+    fn update(&mut self, dt: f64, size: Size) {
         // TODO: Prevent movement outside of boundaries.
+        let radius = self.radius();
+
         self.pos.x += self.move_offset.x;
         self.pos.y += self.move_offset.y;
 
@@ -117,5 +120,11 @@ impl GameObject for Player {
                 Direction::WEST => self.pos.x -= drift_speed,
             }
         }
+
+        geom::restrict_to_bounds(
+            &mut self.pos,
+            [radius, radius, size.width as f64, size.height as f64]
+        );
+
     }
 }

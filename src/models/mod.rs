@@ -2,6 +2,7 @@ use graphics::*;
 use opengl_graphics::GlGraphics;
 
 use geom::Position;
+use piston::window::Size;
 pub mod bullet;
 pub mod enemy;
 pub mod player;
@@ -33,5 +34,5 @@ pub trait GameObject {
     // Only call if debug mode is turned on.
     fn render_dbg(&self, _: &Context, _: &mut GlGraphics) {}
     // Handle updates to movement/animation/etc.
-    fn update(&mut self, _: f64) {}
+    fn update(&mut self, _: f64, _: Size) {}
 }

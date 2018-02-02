@@ -173,6 +173,8 @@ impl<'a> App<'a> {
     // Update any animation, etc.
     // dt is the delta since the last update.
     pub fn update(&mut self, args: &UpdateArgs) {
+        let size = self.window.settings.size();
+
         // Handle game events
         if self.state.fire_cooldown > 0.0 {
             self.state.fire_cooldown -= args.dt;
@@ -186,7 +188,7 @@ impl<'a> App<'a> {
         }
 
         for bullet in self.bullets.iter_mut() {
-            bullet.update(args.dt);
+            bullet.update(args.dt, size);
             // Did bullet collide with any enemies
             for enemy in self.enemies.iter_mut() {
                 if bullet.collides(enemy) {
@@ -194,7 +196,7 @@ impl<'a> App<'a> {
                     bullet.ttl = 0.0;
                     // Destroy enemy
                     enemy.health -= 1;
-                    self.score += 10;
+                    self.score += 20;
                 }
             }
         }
@@ -202,7 +204,7 @@ impl<'a> App<'a> {
         self.bullets.retain(|bullet| bullet.ttl > 0.0);
         self.enemies.retain(|enemy| enemy.health > 0);
         // Update player & enemies
-        self.player.update(args.dt);
+        self.player.update(args.dt, size);
         // If number of enemies is zero... spawn more!
         if self.enemies.len() == 0 {
             let size = self.window.settings.size();
@@ -212,7 +214,7 @@ impl<'a> App<'a> {
         }
 
         for enemy in self.enemies.iter_mut() {
-            enemy.update(args.dt);
+            enemy.update(args.dt, size);
             // If the player collides with an enemy, game over!
             if enemy.collides(&self.player) {
                 self.state.game_status = GameStatus::Died;
