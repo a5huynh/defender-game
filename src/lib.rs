@@ -196,6 +196,12 @@ impl<'a> App<'a> {
     // Update any animation, etc.
     // dt is the delta since the last update.
     pub fn update(&mut self, args: &UpdateArgs) {
+        match self.state.game_status {
+            GameStatus::Died => return,
+            GameStatus::Win => return,
+            _ => (),
+        }
+
         let size = self.window.settings.size();
 
         // Handle game events
