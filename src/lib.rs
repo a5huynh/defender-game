@@ -11,6 +11,8 @@ use piston::window::Window;
 mod color;
 pub mod config;
 mod geom;
+mod gfx;
+use gfx::utils::{draw_center, draw_text};
 
 mod models;
 use models::{GameObject};
@@ -81,6 +83,12 @@ impl<'a> App<'a> {
         };
     }
 
+    fn reset(&mut self) {
+        self.state.game_status = GameStatus::Normal;
+        self.score = 0;
+        self.enemies.clear();
+    }
+
     pub fn input(&mut self, button: &Button, is_press: bool) {
         if is_press {
             if let Button::Keyboard(key) = *button {
@@ -100,14 +108,20 @@ impl<'a> App<'a> {
                         self.state.debug_mode = !self.state.debug_mode;
                         println!("Debug mode: {}", self.state.debug_mode);
                     },
+                    // Reset game
+                    Key::Return => {
+                        match self.state.game_status {
+                            GameStatus::Died => self.reset(),
+                            GameStatus::Win => self.reset(),
+                            _ => (),
+                        }
+                    }
                     _ => (),
                 }
             }
         } else {
             if let Button::Keyboard(key) = *button {
                 match key {
-                    // TODO: Can't do this because stop move on keyup may
-                    // cancel keydown on another key.
                     Key::Up => self.player.stop_move(geom::Direction::NORTH),
                     Key::Down => self.player.stop_move(geom::Direction::SOUTH),
                     Key::Left => self.player.stop_move(geom::Direction::WEST),
@@ -131,9 +145,12 @@ impl<'a> App<'a> {
         let bullets = &self.bullets;
         let enemies = &self.enemies;
         let player = &self.player;
+        let gc = &mut self.glyph_cache;
+        let state = &self.state;
+
         let debug_mode = self.state.debug_mode;
-        let glyph_cache = &mut self.glyph_cache;
         let score = self.score;
+        let size = self.window.settings.size();
 
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
@@ -141,17 +158,23 @@ impl<'a> App<'a> {
 
             // Clear the screen.
             clear(::color::BLACK, gl);
+
+            // Check game status
+            match state.game_status {
+                GameStatus::Died => {
+                    draw_center("YOU DIED!", 32, [size.width as f64, size.height as f64], gc, &c, gl);
+                    return;
+                },
+                GameStatus::Win => {
+                    draw_center("YOU WIN!", 32, [size.width as f64, size.height as f64], gc, &c, gl);
+                    return;
+                },
+                _ => (),
+            }
+
             // Render the current score
-            text::Text::new_color(::color::WHITE, 12)
-                .draw(
-                    format!("Score: {}", score).as_str(),
-                    glyph_cache,
-                    &DrawState::default(),
-                    // Top left is (0.0, 0.0). Doesn't include the height
-                    // of the text either.
-                    c.transform.trans(0.0, 16.0),
-                    gl
-                ).unwrap();
+            let score_str = format!("Score: {}", score);
+            draw_text(score_str.as_str(), [0.0, 16.0], 16, gc, &c, gl);
 
             // Render objects
             for bullet in bullets.iter() {
