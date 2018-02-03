@@ -8,6 +8,7 @@ https://a5huynh.github.io/2018/02/02/adventures-in-rust.html
 
 The version that was developed for that blog post is tagged as [v0.1.0](https://github.com/a5huynh/defender-game/releases/tag/0.1.0)
 
+![game in action](docs/final-result.gif)
 
 ### Running the Game
 
