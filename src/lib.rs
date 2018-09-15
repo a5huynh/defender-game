@@ -119,22 +119,20 @@ impl<'a> App<'a> {
                     _ => (),
                 }
             }
-        } else {
-            if let Button::Keyboard(key) = *button {
-                match key {
-                    Key::Up => self.player.stop_move(geom::Direction::NORTH),
-                    Key::Down => self.player.stop_move(geom::Direction::SOUTH),
-                    Key::Left => self.player.stop_move(geom::Direction::WEST),
-                    Key::Right => self.player.stop_move(geom::Direction::EAST),
-                    // Toggle debug mode.
-                    Key::D => {
-                        if is_press {
-                            self.state.debug_mode = !self.state.debug_mode;
-                            println!("Debug mode: {}", self.state.debug_mode);
-                        }
-                    },
-                    _ => (),
-                }
+        } else if let Button::Keyboard(key) = *button {
+            match key {
+                Key::Up => self.player.stop_move(geom::Direction::NORTH),
+                Key::Down => self.player.stop_move(geom::Direction::SOUTH),
+                Key::Left => self.player.stop_move(geom::Direction::WEST),
+                Key::Right => self.player.stop_move(geom::Direction::EAST),
+                // Toggle debug mode.
+                Key::D => {
+                    if is_press {
+                        self.state.debug_mode = !self.state.debug_mode;
+                        println!("Debug mode: {}", self.state.debug_mode);
+                    }
+                },
+                _ => (),
             }
         }
     }
@@ -216,10 +214,10 @@ impl<'a> App<'a> {
             );
         }
 
-        for bullet in self.bullets.iter_mut() {
+        for bullet in &mut self.bullets {
             bullet.update(args.dt, size);
             // Did bullet collide with any enemies
-            for enemy in self.enemies.iter_mut() {
+            for enemy in &mut self.enemies {
                 if bullet.collides(enemy) {
                     // Destroy bullet
                     bullet.ttl = 0.0;
@@ -235,14 +233,14 @@ impl<'a> App<'a> {
         // Update player & enemies
         self.player.update(args.dt, size);
         // If number of enemies is zero... spawn more!
-        if self.enemies.len() == 0 {
+        if self.enemies.is_empty() {
             let size = self.window.settings.size();
             for _ in 0..10 {
                 self.enemies.push(Enemy::new_rand(f64::from(size.width), f64::from(size.height)));
             }
         }
 
-        for enemy in self.enemies.iter_mut() {
+        for enemy in &mut self.enemies {
             enemy.update(args.dt, size);
             // If the player collides with an enemy, game over!
             if enemy.collides(&self.player) {
