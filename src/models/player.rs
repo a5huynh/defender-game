@@ -23,13 +23,13 @@ pub struct Player {
 
 impl Player {
     pub fn new(x: f64, y: f64) -> Player {
-        return Player {
+        Player {
             dir: Direction::EAST,
             drift_ttl: 0.0,
             move_offset: geom::Position::new(0.0, 0.0),
             pos: geom::Position::new(x, y),
             size: PLAYER_SIZE,
-        };
+        }
     }
 
     pub fn start_move(&mut self, dir: Direction) {

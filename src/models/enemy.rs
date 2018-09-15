@@ -22,19 +22,19 @@ pub struct Enemy {
 
 impl Enemy {
     pub fn new(x: f64, y: f64) -> Enemy {
-        return Enemy {
+        Enemy {
             health: 1,
             move_ttl: MOVE_TTL,
             pos: geom::Position::new(x, y),
             size: ENEMY_RADIUS * 2.0,
-        };
+        }
     }
 
     pub fn new_rand(max_x: f64, max_y: f64) -> Enemy {
         let mut rng = rand::thread_rng();
         let randx = rng.gen_range(0.0, max_x);
         let randy = rng.gen_range(0.0, max_y);
-        return Enemy::new(randx, randy);
+        Enemy::new(randx, randy)
     }
 }
 

@@ -72,7 +72,7 @@ impl<'a> App<'a> {
         let glyph_cache = GlyphCache::new("./assets/fonts/PxPlus_IBM_VGA8.ttf", (), TextureSettings::new())
             .expect("Unable to load font");
 
-        return App {
+        App {
             glyph_cache,
             player,
             state,
@@ -80,7 +80,7 @@ impl<'a> App<'a> {
             bullets: Vec::new(),
             enemies: Vec::new(),
             score: 0,
-        };
+        }
     }
 
     fn reset(&mut self) {
