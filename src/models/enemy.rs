@@ -79,7 +79,7 @@ impl GameObject for Enemy {
 
             geom::restrict_to_bounds(
                 &mut self.pos,
-                [radius, radius, size.width as f64, size.height as f64]
+                [radius, radius, f64::from(size.width), f64::from(size.height)]
             );
 
             // Don't move outside the bounds of the window.

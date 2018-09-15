@@ -56,8 +56,8 @@ impl<'a> App<'a> {
     pub fn new(window: config::GraphicsConfig) -> App<'a> {
         let size = window.settings.size();
 
-        let (x, y) = ((size.width / 2) as f64,
-                      (size.height / 2) as f64);
+        let (x, y) = (f64::from(size.width / 2),
+                      f64::from(size.height / 2));
 
         let player = Player::new(x, y);
 
@@ -162,11 +162,11 @@ impl<'a> App<'a> {
             // Check game status
             match state.game_status {
                 GameStatus::Died => {
-                    draw_center("YOU DIED!", 32, [size.width as f64, size.height as f64], gc, &c, gl);
+                    draw_center("YOU DIED!", 32, [f64::from(size.width), f64::from(size.height)], gc, &c, gl);
                     return;
                 },
                 GameStatus::Win => {
-                    draw_center("YOU WIN!", 32, [size.width as f64, size.height as f64], gc, &c, gl);
+                    draw_center("YOU WIN!", 32, [f64::from(size.width), f64::from(size.height)], gc, &c, gl);
                     return;
                 },
                 _ => (),
@@ -238,7 +238,7 @@ impl<'a> App<'a> {
         if self.enemies.len() == 0 {
             let size = self.window.settings.size();
             for _ in 0..10 {
-                self.enemies.push(Enemy::new_rand(size.width as f64, size.height as f64));
+                self.enemies.push(Enemy::new_rand(f64::from(size.width), f64::from(size.height)));
             }
         }
 
