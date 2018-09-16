@@ -21,16 +21,16 @@ const BULLET_LIFETIME: f64 = 2.0;
 
 impl Bullet {
     pub fn new(x: f64, y: f64, dir: geom::Direction) -> Bullet {
-        return Bullet {
+        Bullet {
             dir,
             pos: geom::Position::new(x, y),
             size: BULLET_SIZE,
             ttl: BULLET_LIFETIME
-        };
+        }
     }
 
     pub fn radius(&self) -> f64 {
-        return self.size / 2.0;
+        self.size / 2.0
     }
 }
 

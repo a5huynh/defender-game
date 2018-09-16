@@ -21,9 +21,9 @@ impl GraphicsConfig {
             .build()
             .unwrap();
 
-        return GraphicsConfig {
+        GraphicsConfig {
             gl: GlGraphics::new(opengl),
             settings
-        };
+        }
     }
 }

@@ -23,13 +23,13 @@ pub struct Player {
 
 impl Player {
     pub fn new(x: f64, y: f64) -> Player {
-        return Player {
+        Player {
             dir: Direction::EAST,
             drift_ttl: 0.0,
             move_offset: geom::Position::new(0.0, 0.0),
             pos: geom::Position::new(x, y),
             size: PLAYER_SIZE,
-        };
+        }
     }
 
     pub fn start_move(&mut self, dir: Direction) {
@@ -123,7 +123,7 @@ impl GameObject for Player {
 
         geom::restrict_to_bounds(
             &mut self.pos,
-            [radius, radius, size.width as f64, size.height as f64]
+            [radius, radius, f64::from(size.width), f64::from(size.height)]
         );
 
     }
