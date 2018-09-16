@@ -22,7 +22,7 @@ pub trait GameObject {
         let r_start = self.radius() - other.radius();
         let r_end = self.radius() + other.radius();
 
-        return r_start.powf(2.0) <= sum && sum <= r_end.powf(2.0);
+        r_start.powf(2.0) <= sum && sum <= r_end.powf(2.0)
     }
 
     // Use to determine position of the object

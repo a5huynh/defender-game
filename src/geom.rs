@@ -13,7 +13,7 @@ pub struct Position {
 
 impl Position {
     pub fn new(x: f64, y: f64) -> Position {
-        return Position { x, y };
+        Position { x, y }
     }
 }
 

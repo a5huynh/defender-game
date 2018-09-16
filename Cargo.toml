@@ -2,10 +2,19 @@
 name = "defender"
 version = "0.1.0"
 authors = ["Andrew Huynh <a5thuynh@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "defender"
+path = "src/main.rs"
+
+[lib]
+name = "defender"
+path = "src/lib.rs"
 
 [dependencies]
-piston = "0.35.0"
-piston2d-graphics = "0.24.0"
-pistoncore-glutin_window = "0.43.0"
-piston2d-opengl_graphics = "0.50.0"
-rand = "0.4"
+piston = "0.37.0"
+piston2d-graphics = "0.26.0"
+pistoncore-glutin_window = "0.48.0"
+piston2d-opengl_graphics = "0.54.0"
+rand = "0.5.5"
