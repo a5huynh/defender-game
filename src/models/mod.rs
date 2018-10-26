@@ -1,8 +1,9 @@
 use graphics::*;
 use opengl_graphics::GlGraphics;
 
-use geom::Position;
 use piston::window::Size;
+use crate::geom::Position;
+
 pub mod bullet;
 pub mod enemy;
 pub mod player;

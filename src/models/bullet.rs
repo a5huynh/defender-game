@@ -1,9 +1,9 @@
 use graphics::{Context, ellipse, Transformed};
 use opengl_graphics::GlGraphics;
 
-use color;
-use geom;
 use piston::window::Size;
+use crate::color;
+use crate::geom;
 use super::GameObject;
 
 pub struct Bullet {

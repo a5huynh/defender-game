@@ -6,19 +6,18 @@ extern crate rand;
 
 use opengl_graphics::{GlyphCache, TextureSettings};
 use piston::input::*;
-use piston::window::Window;
 
 mod color;
-pub mod config;
 mod geom;
 mod gfx;
-use gfx::utils::{draw_center, draw_text};
-
 mod models;
-use models::{GameObject};
-use models::bullet::Bullet;
-use models::enemy::Enemy;
-use models::player::Player;
+pub mod config;
+
+use crate::gfx::utils::{draw_center, draw_text};
+use crate::models::{GameObject};
+use crate::models::bullet::Bullet;
+use crate::models::enemy::Enemy;
+use crate::models::player::Player;
 
 const FIRE_COOLDOWN: f64 = 0.1; // Only allow user to shoot 10 bullets/sec.
 
@@ -155,7 +154,7 @@ impl<'a> App<'a> {
             use graphics::*;
 
             // Clear the screen.
-            clear(::color::BLACK, gl);
+            clear(crate::color::BLACK, gl);
 
             // Check game status
             match state.game_status {

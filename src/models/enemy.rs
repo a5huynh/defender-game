@@ -3,9 +3,9 @@ use opengl_graphics::GlGraphics;
 use rand;
 use rand::Rng;
 
-use color;
-use geom;
 use piston::window::Size;
+use crate::color;
+use crate::geom;
 use super::GameObject;
 
 // The max movement of the enemy in a rando direction.

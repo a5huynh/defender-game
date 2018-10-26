@@ -1,3 +1,5 @@
+use crate::color;
+
 use graphics::{Context, DrawState, Transformed};
 use graphics::text::Text;
 use opengl_graphics::{GlGraphics, GlyphCache};
@@ -6,7 +8,7 @@ pub fn draw_text(txt: &str, pos: [f64; 2], size: u32, gc: &mut GlyphCache, c: &C
 
     let transform = c.transform.trans(pos[0], pos[1]);
 
-    Text::new_color(::color::WHITE, size)
+    Text::new_color(color::WHITE, size)
         .draw(txt, gc, &DrawState::default(), transform, gl)
         .unwrap();
 }

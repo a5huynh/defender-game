@@ -1,10 +1,11 @@
 use graphics::{Context, rectangle, polygon, Transformed};
 use opengl_graphics::GlGraphics;
 
-use color;
-use geom;
-use geom::Direction;
 use piston::window::Size;
+use crate::color;
+use crate::geom;
+use crate::geom::Direction;
+
 use super::GameObject;
 
 const PLAYER_SPEED: f64 = 2.0;
