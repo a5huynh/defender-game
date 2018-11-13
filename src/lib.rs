@@ -6,19 +6,18 @@ extern crate rand;
 
 use opengl_graphics::{GlyphCache, TextureSettings};
 use piston::input::*;
-use piston::window::Window;
 
 mod color;
-pub mod config;
 mod geom;
 mod gfx;
-use gfx::utils::{draw_center, draw_text};
-
 mod models;
-use models::{GameObject};
-use models::bullet::Bullet;
-use models::enemy::Enemy;
-use models::player::Player;
+pub mod config;
+
+use crate::gfx::utils::{draw_center, draw_text};
+use crate::models::{GameObject};
+use crate::models::bullet::Bullet;
+use crate::models::enemy::Enemy;
+use crate::models::player::Player;
 
 const FIRE_COOLDOWN: f64 = 0.1; // Only allow user to shoot 10 bullets/sec.
 
@@ -54,7 +53,7 @@ pub struct App<'a> {
 
 impl<'a> App<'a> {
     pub fn new(window: config::GraphicsConfig) -> App<'a> {
-        let size = window.settings.size();
+        let size = window.size;
 
         let (x, y) = (f64::from(size.width / 2),
                       f64::from(size.height / 2));
@@ -125,13 +124,6 @@ impl<'a> App<'a> {
                 Key::Down => self.player.stop_move(geom::Direction::SOUTH),
                 Key::Left => self.player.stop_move(geom::Direction::WEST),
                 Key::Right => self.player.stop_move(geom::Direction::EAST),
-                // Toggle debug mode.
-                Key::D => {
-                    if is_press {
-                        self.state.debug_mode = !self.state.debug_mode;
-                        println!("Debug mode: {}", self.state.debug_mode);
-                    }
-                },
                 _ => (),
             }
         }
@@ -148,14 +140,14 @@ impl<'a> App<'a> {
 
         let debug_mode = self.state.debug_mode;
         let score = self.score;
-        let size = self.window.settings.size();
+        let size = self.window.size;
 
         // Render stuff.
         self.window.gl.draw(args.viewport(), |c, gl| {
             use graphics::*;
 
             // Clear the screen.
-            clear(::color::BLACK, gl);
+            clear(crate::color::BLACK, gl);
 
             // Check game status
             match state.game_status {
@@ -200,7 +192,7 @@ impl<'a> App<'a> {
             _ => (),
         }
 
-        let size = self.window.settings.size();
+        let size = self.window.size;
 
         // Handle game events
         if self.state.fire_cooldown > 0.0 {
@@ -234,7 +226,7 @@ impl<'a> App<'a> {
         self.player.update(args.dt, size);
         // If number of enemies is zero... spawn more!
         if self.enemies.is_empty() {
-            let size = self.window.settings.size();
+            let size = self.window.size;
             for _ in 0..10 {
                 self.enemies.push(Enemy::new_rand(f64::from(size.width), f64::from(size.height)));
             }
