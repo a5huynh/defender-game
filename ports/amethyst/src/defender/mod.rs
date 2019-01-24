@@ -6,10 +6,8 @@ use amethyst::renderer::{
     Projection,
 };
 
-mod config;
-use config:: {
-    PlayerConfig,
-};
+mod entity;
+use entity::{ Player };
 
 mod render;
 use render::{
@@ -48,9 +46,11 @@ fn initialize_player(world: &mut World) {
     let mut player_transform = Transform::default();
     player_transform.set_xyz(0.0, 0.0, 0.0);
 
+    let player = Player::default();
+
     let player_mesh = create_mesh(
         world,
-        generate_rectangle_vertices(0.0, 0.0, 1.0, 1.0)
+        generate_rectangle_vertices(0.0, 0.0, player.width, player.height)
     );
 
     let player_material = create_material(world, [0.0, 1.0, 0.0, 1.0]);
@@ -59,6 +59,7 @@ fn initialize_player(world: &mut World) {
     world.create_entity()
         .with(player_mesh)
         .with(player_material)
+        .with(player)
         .with(player_transform)
         .build();
 }
