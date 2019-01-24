@@ -1,5 +1,6 @@
 extern crate amethyst;
 use amethyst::core::transform::TransformBundle;
+use amethyst::input::InputBundle;
 use amethyst::prelude::*;
 use amethyst::renderer::{
     DisplayConfig,
@@ -26,7 +27,15 @@ fn main() -> amethyst::Result<()> {
         app_root
     );
 
+    let binding_path = format!(
+        "{}/resources/bindings.ron",
+        app_root,
+    );
+
     let config = DisplayConfig::load(&path);
+
+    let input_bundle = InputBundle::<String, String>::new()
+        .with_bindings_from_file(binding_path)?;
 
     // Setup the rendering pipeline
     let pipe = Pipeline::build()
@@ -42,7 +51,9 @@ fn main() -> amethyst::Result<()> {
             RenderBundle::new(pipe, Some(config))
                 .with_sprite_sheet_processor()
         )?
-        .with_bundle(TransformBundle::new())?;
+        .with_bundle(TransformBundle::new())?
+        .with_bundle(input_bundle)?
+        .with(defender::systems::player::PlayerSystem, "player_system", &["input_system"]);
 
     let mut game = Application::new("./", Defender, game_data)?;
     game.run();

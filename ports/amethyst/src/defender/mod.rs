@@ -16,6 +16,8 @@ use render::{
     generate_rectangle_vertices,
 };
 
+pub mod systems;
+
 pub const WINDOW_HEIGHT: f32 = 768.0;
 pub const WINDOW_WIDTH: f32 = 960.0;
 
@@ -31,12 +33,16 @@ impl SimpleState for Defender {
 fn initialize_camera(world: &mut World) {
     let mut transform = Transform::default();
     transform.set_z(1.0);
+
+    let width_half = WINDOW_WIDTH * 0.5;
+    let height_half = WINDOW_HEIGHT * 0.5;
+
     world.create_entity()
         .with(Camera::from(Projection::orthographic(
-            -WINDOW_WIDTH / 2.0,
-            WINDOW_WIDTH / 2.0,
-            -WINDOW_HEIGHT / 2.0,
-            WINDOW_HEIGHT / 2.0,
+            -width_half,
+            width_half,
+            -height_half,
+            height_half,
         )))
         .with(transform)
         .build();
