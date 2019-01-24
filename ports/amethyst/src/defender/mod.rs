@@ -3,7 +3,11 @@ use amethyst::core::transform::Transform;
 use amethyst::prelude::*;
 use amethyst::renderer::{
     Camera,
+    Event,
+    KeyboardInput,
     Projection,
+    VirtualKeyCode,
+    WindowEvent,
 };
 
 mod entity;
@@ -27,6 +31,29 @@ impl SimpleState for Defender {
 
         initialize_camera(world);
         initialize_player(world);
+    }
+
+    fn handle_event(&mut self, _: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
+        if let StateEvent::Window(event) = &event {
+            match event {
+                Event::WindowEvent { event, .. } => {
+                    match event {
+                        WindowEvent::KeyboardInput {
+                            input: KeyboardInput {
+                                virtual_keycode: Some(VirtualKeyCode::Escape),
+                                ..
+                            },
+                            ..
+                        } => Trans::Quit,
+                        WindowEvent::CloseRequested => Trans::Quit,
+                        _ => Trans::None,
+                    }
+                },
+                _ => Trans::None,
+            }
+        } else {
+            Trans::None
+        }
     }
 }
 
