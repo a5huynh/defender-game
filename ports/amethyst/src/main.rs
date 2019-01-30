@@ -15,6 +15,7 @@ use amethyst::utils::application_root_dir;
 
 mod defender;
 use crate::defender::Defender;
+use crate::defender::config::DefenderConfig;
 
 fn main() -> amethyst::Result<()> {
     // Start the amethyst logger with a default config.
@@ -32,7 +33,13 @@ fn main() -> amethyst::Result<()> {
         app_root,
     );
 
+    let config_path = format!(
+        "{}/resources/config.ron",
+        app_root,
+    );
+
     let config = DisplayConfig::load(&path);
+    let game_config = DefenderConfig::load(&config_path);
 
     let input_bundle = InputBundle::<String, String>::new()
         .with_bindings_from_file(binding_path)?;
@@ -55,7 +62,10 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(input_bundle)?
         .with(defender::systems::player::PlayerSystem, "player_system", &["input_system"]);
 
-    let mut game = Application::new("./", Defender, game_data)?;
+    let mut game = Application::build("./", Defender)?
+        .with_resource(game_config.player)
+        .build(game_data)?;
+
     game.run();
 
     Ok(())

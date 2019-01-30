@@ -1,3 +1,5 @@
+extern crate serde;
+
 pub struct Defender;
 use amethyst::core::transform::Transform;
 use amethyst::prelude::*;
@@ -9,6 +11,9 @@ use amethyst::renderer::{
     VirtualKeyCode,
     WindowEvent,
 };
+
+pub mod config;
+use config::PlayerConfig;
 
 mod entity;
 use entity::{ Player };
@@ -80,20 +85,23 @@ fn initialize_player(world: &mut World) {
     let mut player_transform = Transform::default();
     player_transform.set_xyz(0.0, 0.0, 0.0);
 
-    let player = Player::default();
+    let (width, height, color) = {
+        let config = &world.read_resource::<PlayerConfig>();
+        (config.width, config.height, config.color)
+    };
 
     let player_mesh = create_mesh(
         world,
-        generate_triangle_vertices(0.0, 0.0, player.width, player.height)
+        generate_triangle_vertices(0.0, 0.0, width, height)
     );
 
-    let player_material = create_material(world, [0.0, 1.0, 0.0, 1.0]);
+    let player_material = create_material(world, color);
 
     // Create player triangle
     world.create_entity()
         .with(player_mesh)
         .with(player_material)
-        .with(player)
+        .with(Player {})
         .with(player_transform)
         .build();
 }
