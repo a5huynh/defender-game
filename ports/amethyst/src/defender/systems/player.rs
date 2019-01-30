@@ -41,7 +41,7 @@ impl<'s> System<'s> for PlayerSystem {
                     let width_half = WINDOW_WIDTH * 0.5;
                     let height_half = WINDOW_HEIGHT * 0.5;
 
-                    let new_x = (player_x - scaled_x)
+                    let new_x = (player_x + scaled_x)
                         .min(width_half)
                         .max(-width_half);
 
