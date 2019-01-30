@@ -56,3 +56,24 @@ pub fn generate_rectangle_vertices(left: f32, bottom: f32, right: f32, top: f32)
         },
     ]
 }
+
+/// Creates a triangle centered at (x, y)
+pub fn generate_triangle_vertices(x: f32, y: f32, width: f32, height: f32) -> Vec<PosTex> {
+    let half_height = height / 2.0;
+    let half_width = width / 2.0;
+
+    vec![
+        PosTex {
+            position: Vector3::new(x - half_width, y - half_height, 0.0),
+            tex_coord: Vector2::new(0.0, 0.0),
+        },
+        PosTex {
+            position: Vector3::new(x + half_width, y - half_height, 0.0),
+            tex_coord: Vector2::new(1.0, 0.0),
+        },
+        PosTex {
+            position: Vector3::new(0.0, y + half_height, 0.0),
+            tex_coord: Vector2::new(0.5, 1.0),
+        },
+    ]
+}

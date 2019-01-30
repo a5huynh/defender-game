@@ -18,6 +18,7 @@ use render::{
     create_mesh,
     create_material,
     generate_rectangle_vertices,
+    generate_triangle_vertices,
 };
 
 pub mod systems;
@@ -83,7 +84,7 @@ fn initialize_player(world: &mut World) {
 
     let player_mesh = create_mesh(
         world,
-        generate_rectangle_vertices(0.0, 0.0, player.width, player.height)
+        generate_triangle_vertices(0.0, 0.0, player.width, player.height)
     );
 
     let player_material = create_material(world, [0.0, 1.0, 0.0, 1.0]);
