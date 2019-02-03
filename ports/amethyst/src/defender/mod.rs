@@ -101,7 +101,9 @@ fn initialize_player(world: &mut World) {
     world.create_entity()
         .with(player_mesh)
         .with(player_material)
-        .with(Player {})
+        .with(Player {
+            direction: 0.0
+        })
         .with(player_transform)
         .build();
 }

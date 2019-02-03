@@ -15,22 +15,20 @@ use amethyst::{
     ecs::prelude::{ Join, Read, ReadStorage, System, WriteStorage },
     input::InputHandler,
 };
-use std::f32::consts::{ PI };
-
 pub struct PlayerSystem;
 
 impl<'s> System<'s> for PlayerSystem {
     type SystemData = (
         // What this system mutates
         WriteStorage<'s, Transform>,
-        // Reads the player components
-        ReadStorage<'s, Player>,
+        // Let's us set the direction the player is facing.
+        WriteStorage<'s, Player>,
         // Also has access to the input handler
         Read<'s, InputHandler<String, String>>,
     );
 
-    fn run(&mut self, (mut transforms, players, input): Self::SystemData) {
-        for (_player, transform) in (&players, &mut transforms).join() {
+    fn run(&mut self, (mut transforms, mut players, input): Self::SystemData) {
+        for (player, transform) in (&mut players, &mut transforms).join() {
             let movement_x = input.axis_value("player_x");
             let movement_y = input.axis_value("player_y");
 
@@ -40,7 +38,13 @@ impl<'s> System<'s> for PlayerSystem {
                     // Determine direction the player is facing by
                     // calculating the angle between the up/down,
                     // left/right vector.
-                    let mut rot_angle = -1.0 * mv_x.atan2(mv_y) as f32;
+                    let mut rot_angle = player.direction;
+                    // If the direction has change since we last moved,
+                    // recalculate the angle and update our direction.
+                    if mv_x.abs() > 0.0 || mv_y.abs() > 0.0 {
+                        rot_angle = -1.0 * mv_x.atan2(mv_y) as f32;
+                        player.direction = rot_angle;
+                    }
 
                     let new_rotation = UnitQuaternion::from_axis_angle(
                         &Vector3::z_axis(),

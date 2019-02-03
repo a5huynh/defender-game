@@ -3,7 +3,11 @@ use amethyst::{
 };
 
 #[derive(Debug)]
-pub struct Player;
+pub struct Player {
+    // The direction the player is facing in radians.
+    pub direction: f32,
+}
+
 impl Component for Player {
     type Storage = DenseVecStorage<Self>;
 }
