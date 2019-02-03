@@ -5,10 +5,17 @@ use crate::defender::{
 };
 
 use amethyst::{
-    core::{ transform::Transform },
+    core::{
+        nalgebra::{
+            geometry::UnitQuaternion,
+            Vector3,
+        },
+        transform::Transform
+    },
     ecs::prelude::{ Join, Read, ReadStorage, System, WriteStorage },
     input::InputHandler,
 };
+use std::f32::consts::{ PI };
 
 pub struct PlayerSystem;
 
@@ -30,6 +37,16 @@ impl<'s> System<'s> for PlayerSystem {
             // Move the player
             if let Some(mv_x) = movement_x {
                 if let Some(mv_y) = movement_y {
+                    // Determine direction the player is facing by
+                    // calculating the angle between the up/down,
+                    // left/right vector.
+                    let mut rot_angle = -1.0 * mv_x.atan2(mv_y) as f32;
+
+                    let new_rotation = UnitQuaternion::from_axis_angle(
+                        &Vector3::z_axis(),
+                        rot_angle
+                    );
+
                     // Scale movement by some factor to make the motion seem
                     // smoother
                     let scaled_x = 1.2 * mv_x as f32;
@@ -52,6 +69,7 @@ impl<'s> System<'s> for PlayerSystem {
 
                     transform.set_x(new_x);
                     transform.set_y(new_y);
+                    transform.set_rotation(new_rotation);
                 }
             }
         }
