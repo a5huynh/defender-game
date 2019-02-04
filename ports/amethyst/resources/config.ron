@@ -1,9 +1,15 @@
 (
-    player: (
+    bullet: (
         height: 10.0,
         width: 10.0,
+        // White
+        color: (1.0, 1.0, 1.0, 1.0)
+    ),
+    player: (
+        height: 20.0,
+        width: 20.0,
         rotation: 0.0,
         // Green
-        color: [0.0, 1.0, 0.0, 1.0],
-    )
+        color: (0.0, 1.0, 0.0, 1.0),
+    ),
 )
