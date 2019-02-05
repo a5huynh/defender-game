@@ -12,7 +12,7 @@ use amethyst::{
         },
         transform::Transform
     },
-    ecs::prelude::{ Join, Read, ReadStorage, System, WriteStorage },
+    ecs::prelude::{ Join, Read, System, WriteStorage },
     input::InputHandler,
 };
 pub struct PlayerSystem;
