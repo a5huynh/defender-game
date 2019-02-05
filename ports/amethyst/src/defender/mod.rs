@@ -13,10 +13,10 @@ use amethyst::renderer::{
 };
 
 pub mod config;
-use config::PlayerConfig;
+use config::{ BulletConfig, PlayerConfig };
 
 mod entity;
-use entity::{ Player };
+use entity::{ Bullet, BulletResource, Player };
 
 mod render;
 use render::{
@@ -35,8 +35,11 @@ impl SimpleState for Defender {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
+        // Initialize entities that exist at the beginning.
         initialize_camera(world);
         initialize_player(world);
+        // Initialize resources
+        initialize_bullet(world);
     }
 
     fn handle_event(&mut self, _: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
@@ -61,6 +64,28 @@ impl SimpleState for Defender {
             Trans::None
         }
     }
+}
+
+fn initialize_bullet(world: &mut World) {
+    let (width, height, color) = {
+        let config = &world.read_resource::<BulletConfig>();
+        (config.width, config.height, config.color)
+    };
+
+    let bullet_mesh = create_mesh(
+        world,
+        generate_rectangle_vertices(0.0, 0.0, width, height)
+    );
+
+    let bullet_material = create_material(world, color);
+    let bullet_resource = BulletResource {
+        material: bullet_material,
+        mesh: bullet_mesh
+    };
+
+    // Register bullet entity & add resource so we can use it later.
+    world.register::<Bullet>();
+    world.add_resource(bullet_resource.clone());
 }
 
 fn initialize_camera(world: &mut World) {
