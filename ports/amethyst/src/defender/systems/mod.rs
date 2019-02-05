@@ -1,2 +1,5 @@
+pub mod bullet;
 pub mod player;
-pub mod spawn_bullet;
+
+pub use bullet::SpawnBulletSystem;
+pub use player::PlayerSystem;

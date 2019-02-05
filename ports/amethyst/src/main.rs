@@ -60,8 +60,8 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
-        .with(defender::systems::player::PlayerSystem, "player_system", &["input_system"])
-        .with(defender::systems::spawn_bullet::BulletSystem, "spawn_bullet_system", &["input_system"]);
+        .with(defender::systems::PlayerSystem, "player_system", &["input_system"])
+        .with(defender::systems::SpawnBulletSystem, "spawn_bullet_system", &["input_system"]);
 
     let mut game = Application::build("./", Defender)?
         .with_resource(game_config.bullet)

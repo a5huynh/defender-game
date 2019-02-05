@@ -15,9 +15,9 @@ use amethyst::{
 
 use crate::defender::entity::{ Bullet, BulletResource };
 
-pub struct BulletSystem;
+pub struct SpawnBulletSystem;
 
-impl<'s> System<'s> for BulletSystem {
+impl<'s> System<'s> for SpawnBulletSystem {
     /// Expected system data:
     ///     Entities:           The list of entities in the world.
     ///     BulletResource:     BulletResource we want to add.
