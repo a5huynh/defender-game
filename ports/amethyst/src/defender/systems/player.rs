@@ -1,20 +1,30 @@
-use crate::defender::{
-    entity::{ Player },
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH,
-};
-
 use amethyst::{
     core::{
         nalgebra::{
             geometry::UnitQuaternion,
             Vector3,
         },
+        timing::Time,
         transform::Transform
     },
-    ecs::prelude::{ Join, Read, System, WriteStorage },
+    ecs::prelude::{
+        Entities,
+        Join,
+        LazyUpdate,
+        Read,
+        ReadExpect,
+        System,
+        WriteStorage
+    },
     input::InputHandler,
 };
+use crate::defender::{
+    config::PlayerConfig,
+    entity::{ Bullet, BulletResource, Player },
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+};
+
 pub struct PlayerSystem;
 
 impl<'s> System<'s> for PlayerSystem {
@@ -23,14 +33,46 @@ impl<'s> System<'s> for PlayerSystem {
         WriteStorage<'s, Transform>,
         // Let's us set the direction the player is facing.
         WriteStorage<'s, Player>,
+        ReadExpect<'s, PlayerConfig>,
+        // Entities in case we want to add a new bullet
+        Entities<'s>,
+        ReadExpect<'s, BulletResource>,
+        ReadExpect<'s, LazyUpdate>,
         // Also has access to the input handler
         Read<'s, InputHandler<String, String>>,
+        Read<'s, Time>
     );
 
-    fn run(&mut self, (mut transforms, mut players, input): Self::SystemData) {
+    fn run(&mut self, (mut transforms, mut players, player_config, entities, bullet_resource, lazy_update, input, time): Self::SystemData) {
         for (player, transform) in (&mut players, &mut transforms).join() {
             let movement_x = input.axis_value("player_x");
             let movement_y = input.axis_value("player_y");
+
+            let fire_action = input.action_is_down("fire");
+
+            if player.weapon_cooldown >= 0.0 {
+                player.weapon_cooldown -= time.delta_seconds();
+            }
+
+            // Add a new bullet entity
+            if let Some(fired) = fire_action {
+                if fired && player.weapon_cooldown <= 0.0 {
+                    // Setup cooldown
+                    player.weapon_cooldown = player_config.weapon_cooldown;
+
+                    // Add bullet
+                    let entity = entities.create();
+                    let bullet = Bullet::new(player);
+                    let pos = transform.clone();
+
+                    // Add new bullet to scene using LazyUpdate which queues up
+                    // new entities.
+                    lazy_update.insert(entity, bullet_resource.material.clone());
+                    lazy_update.insert(entity, bullet_resource.mesh.clone());
+                    lazy_update.insert(entity, bullet);
+                    lazy_update.insert(entity, pos);
+                }
+            }
 
             // Move the player
             if let Some(mv_x) = movement_x {

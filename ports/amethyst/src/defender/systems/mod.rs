@@ -1,5 +1,5 @@
 pub mod bullet;
 pub mod player;
 
-pub use bullet::SpawnBulletSystem;
+pub use bullet::MoveBulletSystem;
 pub use player::PlayerSystem;

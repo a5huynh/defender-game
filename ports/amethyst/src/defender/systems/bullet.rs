@@ -1,52 +1,49 @@
 /// Handles spawning a new player bullet in the direction the player is facing
 /// whenever the "fire" button is pressed.
 use amethyst::{
+    core::timing::Time,
     core::transform::Transform,
     ecs::prelude::{
-        Entity,
-        Entities,
-        LazyUpdate,
+        Join,
         Read,
         ReadExpect,
+        ReadStorage,
         System,
+        WriteStorage,
     },
-    input::InputHandler,
+};
+use std::f32::consts::PI;
+use crate::defender::{
+    config::BulletConfig,
+    entity::Bullet,
 };
 
-use crate::defender::entity::{ Bullet, BulletResource };
+/// Move a bullet
+pub struct MoveBulletSystem;
 
-pub struct SpawnBulletSystem;
-
-impl<'s> System<'s> for SpawnBulletSystem {
-    /// Expected system data:
-    ///     Entities:           The list of entities in the world.
-    ///     BulletResource:     BulletResource we want to add.
-    ///     LazyUpdate:         LazyUpdate system that queues up the entity creation.
-    ///     InputHandler:       Input handler system.
+impl<'s> System<'s> for MoveBulletSystem {
     type SystemData = (
-        Entities<'s>,
-        ReadExpect<'s, BulletResource>,
-        ReadExpect<'s, LazyUpdate>,
-        Read<'s, InputHandler<String, String>>,
+        // List of bullets in the system
+        ReadStorage<'s, Bullet>,
+        ReadExpect<'s, BulletConfig>,
+        // Associated transform in the system
+        WriteStorage<'s, Transform>,
+        Read<'s, Time>,
     );
 
-    fn run(&mut self, (entities, bullet_resource, lazy_update, input): Self::SystemData) {
-        let bullet_action = input.action_is_down("fire");
-        if let Some(bullet_fired) = bullet_action {
-            if !bullet_fired {
-                return;
-            }
+    fn run(&mut self, (bullets, config, mut transforms, time): Self::SystemData) {
+        for (bullet, transform) in (&bullets, &mut transforms).join() {
+            // The direction is stored as a polar coordinate. Convert to
+            // a direction vector and add to the current position.
+            // Add PI / 2.0
+            let x = (bullet.direction + PI / 2.0).cos();
+            let y = (bullet.direction + PI / 2.0).sin();
 
-            let bullet:Entity = entities.create();
-            // Starting position
-            let pos = Transform::default();
-
-            // Add new bullet to scene using LazyUpdate which queues up
-            // new entities.
-            lazy_update.insert(bullet, bullet_resource.material.clone());
-            lazy_update.insert(bullet, bullet_resource.mesh.clone());
-            lazy_update.insert(bullet, Bullet::default());
-            lazy_update.insert(bullet, pos);
+            // Continue moving the bullet in the current direction.
+            let new_x = x * config.velocity * time.delta_seconds();
+            let new_y = y * config.velocity * time.delta_seconds();
+            transform.translate_x(new_x);
+            transform.translate_y(new_y);
         }
     }
 }
