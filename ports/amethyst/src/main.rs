@@ -1,4 +1,3 @@
-extern crate amethyst;
 use amethyst::core::transform::TransformBundle;
 use amethyst::input::InputBundle;
 use amethyst::prelude::*;

@@ -30,7 +30,7 @@ impl Bullet {
     pub fn new(shooter: &Player) -> Self {
         Bullet {
             direction: shooter.direction,
-            ttl: 10.0
+            ttl: 0.0
         }
     }
 }

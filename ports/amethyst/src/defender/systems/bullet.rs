@@ -1,13 +1,11 @@
-/// Handles spawning a new player bullet in the direction the player is facing
-/// whenever the "fire" button is pressed.
 use amethyst::{
     core::timing::Time,
     core::transform::Transform,
     ecs::prelude::{
+        Entities,
         Join,
         Read,
         ReadExpect,
-        ReadStorage,
         System,
         WriteStorage,
     },
@@ -18,21 +16,30 @@ use crate::defender::{
     entity::Bullet,
 };
 
-/// Move a bullet
+/// Handles moving a bullet continually in the direction it was fired.
 pub struct MoveBulletSystem;
 
 impl<'s> System<'s> for MoveBulletSystem {
     type SystemData = (
+        Entities<'s>,
         // List of bullets in the system
-        ReadStorage<'s, Bullet>,
+        WriteStorage<'s, Bullet>,
         ReadExpect<'s, BulletConfig>,
         // Associated transform in the system
         WriteStorage<'s, Transform>,
         Read<'s, Time>,
     );
 
-    fn run(&mut self, (bullets, config, mut transforms, time): Self::SystemData) {
-        for (bullet, transform) in (&bullets, &mut transforms).join() {
+    fn run(&mut self, (entities, mut bullets, config, mut transforms, time): Self::SystemData) {
+        for (bullet_entity, bullet, transform) in (&entities, &mut bullets, &mut transforms).join() {
+            if bullet.ttl < config.ttl {
+                bullet.ttl += time.delta_seconds();
+            } else {
+                // Remove the bullet if the ttl is <= 0.0
+                entities.delete(bullet_entity)
+                    .expect("Unable to delete bullet entity");
+            }
+
             // The direction is stored as a polar coordinate. Convert to
             // a direction vector and add to the current position.
             // Add PI / 2.0
