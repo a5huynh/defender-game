@@ -8,27 +8,29 @@ use amethyst::{
 
 #[derive(Debug)]
 pub struct Player {
-    // The direction the player is facing in radians.
+    /// The direction the player is facing in radians.
     pub direction: f32,
+    /// Current weapon cooldown timer
+    pub weapon_cooldown: f32,
 }
 
 impl Component for Player {
     type Storage = DenseVecStorage<Self>;
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Bullet {
     /// Direction the bullet is going.
     pub direction: f32,
     /// Time-to-live for the bullet.
-    pub ttl: f32
+    pub ttl: f32,
 }
 
-impl Default for Bullet {
-    fn default() -> Self {
+impl Bullet {
+    pub fn new(shooter: &Player) -> Self {
         Bullet {
-            direction: 0.0,
-            ttl: 10.0,
+            direction: shooter.direction,
+            ttl: 10.0
         }
     }
 }

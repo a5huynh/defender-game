@@ -67,14 +67,14 @@ impl SimpleState for Defender {
 }
 
 fn initialize_bullet(world: &mut World) {
-    let (width, height, color) = {
+    let (dimensions, color) = {
         let config = &world.read_resource::<BulletConfig>();
-        (config.width, config.height, config.color)
+        (config.dimensions, config.color)
     };
 
     let bullet_mesh = create_mesh(
         world,
-        generate_rectangle_vertices(0.0, 0.0, width, height)
+        generate_rectangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
     );
 
     let bullet_material = create_material(world, color);
@@ -110,14 +110,14 @@ fn initialize_player(world: &mut World) {
     let mut player_transform = Transform::default();
     player_transform.set_xyz(0.0, 0.0, 0.0);
 
-    let (width, height, color) = {
+    let (dimensions, color) = {
         let config = &world.read_resource::<PlayerConfig>();
-        (config.width, config.height, config.color)
+        (config.dimensions, config.color)
     };
 
     let player_mesh = create_mesh(
         world,
-        generate_triangle_vertices(0.0, 0.0, width, height)
+        generate_triangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
     );
 
     let player_material = create_material(world, color);
@@ -127,7 +127,8 @@ fn initialize_player(world: &mut World) {
         .with(player_mesh)
         .with(player_material)
         .with(Player {
-            direction: 0.0
+            direction: 0.0,
+            weapon_cooldown: 0.0
         })
         .with(player_transform)
         .build();
