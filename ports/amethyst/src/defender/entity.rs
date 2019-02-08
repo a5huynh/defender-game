@@ -7,14 +7,28 @@ use amethyst::{
 };
 
 #[derive(Debug)]
-pub struct Player {
-    /// The direction the player is facing in radians.
-    pub direction: f32,
-    /// Current weapon cooldown timer
-    pub weapon_cooldown: f32,
+pub struct Enemy {
+    is_destroyed: bool,
 }
 
-impl Component for Player {
+impl Default for Enemy {
+    fn default() -> Self {
+        Enemy {
+            is_destroyed: false
+        }
+    }
+}
+
+impl Component for Enemy {
+    type Storage = DenseVecStorage<Self>;
+}
+
+pub struct EnemyResource {
+    pub material: Material,
+    pub mesh: MeshHandle,
+}
+
+impl Component for EnemyResource {
     type Storage = DenseVecStorage<Self>;
 }
 
@@ -46,5 +60,17 @@ pub struct BulletResource {
 }
 
 impl Component for BulletResource {
+    type Storage = DenseVecStorage<Self>;
+}
+
+#[derive(Debug)]
+pub struct Player {
+    /// The direction the player is facing in radians.
+    pub direction: f32,
+    /// Current weapon cooldown timer
+    pub weapon_cooldown: f32,
+}
+
+impl Component for Player {
     type Storage = DenseVecStorage<Self>;
 }

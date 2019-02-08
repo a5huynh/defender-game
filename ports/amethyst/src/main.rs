@@ -20,22 +20,10 @@ fn main() -> amethyst::Result<()> {
     // Start the amethyst logger with a default config.
     amethyst::start_logger(Default::default());
 
-    let app_root = application_root_dir();
-
-    let path = format!(
-        "{}/resources/display_config.ron",
-        app_root
-    );
-
-    let binding_path = format!(
-        "{}/resources/bindings.ron",
-        app_root,
-    );
-
-    let config_path = format!(
-        "{}/resources/config.ron",
-        app_root,
-    );
+    let resource_root = format!("{}/resources", application_root_dir());
+    let path = format!("{}/display_config.ron", resource_root);
+    let binding_path = format!("{}/bindings.ron", resource_root);
+    let config_path = format!("{}/config.ron", resource_root);
 
     let config = DisplayConfig::load(&path);
     let game_config = DefenderConfig::load(&config_path);

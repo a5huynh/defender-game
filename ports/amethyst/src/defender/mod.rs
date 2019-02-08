@@ -1,6 +1,3 @@
-extern crate serde;
-
-pub struct Defender;
 use amethyst::core::transform::Transform;
 use amethyst::prelude::*;
 use amethyst::renderer::{
@@ -11,12 +8,22 @@ use amethyst::renderer::{
     VirtualKeyCode,
     WindowEvent,
 };
+use rand::prelude::*;
 
 pub mod config;
-use config::{ BulletConfig, PlayerConfig };
+use config::{
+    BulletConfig,
+    PlayerConfig
+};
 
 mod entity;
-use entity::{ Bullet, BulletResource, Player };
+use entity::{
+    Bullet,
+    BulletResource,
+    Enemy,
+    EnemyResource,
+    Player
+};
 
 mod render;
 use render::{
@@ -31,12 +38,15 @@ pub mod systems;
 pub const WINDOW_HEIGHT: f32 = 768.0;
 pub const WINDOW_WIDTH: f32 = 960.0;
 
+pub struct Defender;
+
 impl SimpleState for Defender {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
         // Initialize entities that exist at the beginning.
         initialize_camera(world);
+        initialize_enemies(world);
         initialize_player(world);
         // Initialize resources
         initialize_bullet(world);
@@ -104,6 +114,43 @@ fn initialize_camera(world: &mut World) {
         )))
         .with(transform)
         .build();
+}
+
+fn initialize_enemies(world: &mut World) {
+    let dimensions = [30.0, 30.0];
+
+    let mesh = create_mesh(
+        world,
+        generate_rectangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
+    );
+
+    let material = create_material(world, [1.0, 0.0, 0.0, 1.0]);
+    // let resource = EnemyResource { material, mesh };
+
+    let mut rng = rand::thread_rng();
+    let max_x = WINDOW_WIDTH / 2.0;
+    let max_y = WINDOW_HEIGHT / 2.0;
+
+    world.register::<Enemy>();
+    for _ in 0..5 {
+        let mut transform = Transform::default();
+        let x = (rng.gen::<f32>() * WINDOW_WIDTH - max_x)
+            .min(max_x)
+            .max(-max_x);
+
+        let y: f32 = (rng.gen::<f32>() * WINDOW_HEIGHT - max_y)
+            .min(max_y)
+            .max(-max_y);
+
+        transform.set_xyz(x, y, 0.0);
+
+        world.create_entity()
+            .with(mesh.clone())
+            .with(material.clone())
+            .with(Enemy::default())
+            .with(transform)
+            .build();
+    }
 }
 
 fn initialize_player(world: &mut World) {
