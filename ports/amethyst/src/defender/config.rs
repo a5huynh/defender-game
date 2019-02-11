@@ -46,6 +46,19 @@ impl Default for EnemyConfig {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+pub struct GameConfig {
+    pub enemy_count: u32,
+}
+
+impl Default for GameConfig  {
+    fn default() -> Self {
+        GameConfig {
+            enemy_count: 1
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PlayerConfig {
     /// width x height in pixels, of the player icon.
     pub dimensions: [f32; 2],
@@ -71,5 +84,6 @@ impl Default for PlayerConfig {
 pub struct DefenderConfig {
     pub bullet: BulletConfig,
     pub enemy: EnemyConfig,
+    pub game: GameConfig,
     pub player: PlayerConfig,
 }

@@ -1,4 +1,7 @@
 (
+    game: (
+        enemy_count: 10,
+    ),
     bullet: (
         // White
         color: (1.0, 1.0, 1.0, 1.0),

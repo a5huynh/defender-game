@@ -20,6 +20,7 @@ use config::{
     },
     BulletConfig,
     EnemyConfig,
+    GameConfig,
     PlayerConfig,
 };
 
@@ -118,9 +119,16 @@ fn initialize_camera(world: &mut World) {
 }
 
 fn initialize_enemies(world: &mut World) {
+    let mut rng = rand::thread_rng();
+
     let dimensions = {
         let config = &world.read_resource::<EnemyConfig>();
         config.dimensions
+    };
+
+    let num_enemies = {
+        let config = &world.read_resource::<GameConfig>();
+        config.enemy_count
     };
 
     let mesh = create_mesh(
@@ -131,10 +139,8 @@ fn initialize_enemies(world: &mut World) {
     let material = create_material(world, [1.0, 0.0, 0.0, 1.0]);
     // let resource = EnemyResource { material, mesh };
 
-    let mut rng = rand::thread_rng();
-
     world.register::<Enemy>();
-    for _ in 0..5 {
+    for _ in 0..num_enemies {
         let mut transform = Transform::default();
         let x = (rng.gen::<f32>() * WIN_WIDTH - FRAC_WIN_WIDTH_2)
             .min(FRAC_WIN_WIDTH_2)
