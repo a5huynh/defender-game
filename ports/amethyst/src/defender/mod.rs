@@ -13,7 +13,8 @@ use rand::prelude::*;
 pub mod config;
 use config::{
     BulletConfig,
-    PlayerConfig
+    EnemyConfig,
+    PlayerConfig,
 };
 
 mod entity;
@@ -117,7 +118,10 @@ fn initialize_camera(world: &mut World) {
 }
 
 fn initialize_enemies(world: &mut World) {
-    let dimensions = [30.0, 30.0];
+    let dimensions = {
+        let config = &world.read_resource::<EnemyConfig>();
+        config.dimensions
+    };
 
     let mesh = create_mesh(
         world,

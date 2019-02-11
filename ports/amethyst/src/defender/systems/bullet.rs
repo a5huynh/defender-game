@@ -31,7 +31,8 @@ impl<'s> System<'s> for MoveBulletSystem {
     );
 
     fn run(&mut self, (entities, mut bullets, config, mut transforms, time): Self::SystemData) {
-        for (bullet_entity, bullet, transform) in (&entities, &mut bullets, &mut transforms).join() {
+        for (bullet_entity, bullet, transform) in
+            (&entities, &mut bullets, &mut transforms).join() {
             if bullet.ttl < config.ttl {
                 bullet.ttl += time.delta_seconds();
             } else {

@@ -47,11 +47,13 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
+        .with(defender::systems::EnemySystem, "enemy_system", &[])
         .with(defender::systems::PlayerSystem, "player_system", &["input_system"])
         .with(defender::systems::MoveBulletSystem, "move_bullet_system", &[]);
 
     let mut game = Application::build("./", Defender)?
         .with_resource(game_config.bullet)
+        .with_resource(game_config.enemy)
         .with_resource(game_config.player)
         .build(game_data)?;
 

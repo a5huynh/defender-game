@@ -8,13 +8,20 @@ use amethyst::{
 
 #[derive(Debug)]
 pub struct Enemy {
-    is_destroyed: bool,
+    /// Direction this enemy is going.
+    pub direction: f32,
+    /// Was this enemy destroyed? If so, remove from game.
+    pub is_destroyed: bool,
+    /// Time left til the enemy decides to change direction.
+    pub ttc: f32,
 }
 
 impl Default for Enemy {
     fn default() -> Self {
         Enemy {
-            is_destroyed: false
+            direction: 0.0,
+            is_destroyed: false,
+            ttc: 0.0,
         }
     }
 }

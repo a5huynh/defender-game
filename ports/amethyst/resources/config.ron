@@ -6,6 +6,11 @@
         ttl: 1.0,
         velocity: 300.0,
     ),
+    enemy: (
+        dimensions: (25.0, 25.0),
+        ttc: 1.0,
+        velocity: 200.0,
+    ),
     player: (
         dimensions: (20.0, 20.0),
         rotation: 0.0,
