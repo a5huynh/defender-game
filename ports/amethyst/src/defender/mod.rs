@@ -12,6 +12,12 @@ use rand::prelude::*;
 
 pub mod config;
 use config::{
+    consts::{
+        FRAC_WIN_HEIGHT_2,
+        FRAC_WIN_WIDTH_2,
+        WIN_HEIGHT,
+        WIN_WIDTH,
+    },
     BulletConfig,
     EnemyConfig,
     PlayerConfig,
@@ -35,9 +41,6 @@ use render::{
 };
 
 pub mod systems;
-
-pub const WINDOW_HEIGHT: f32 = 768.0;
-pub const WINDOW_WIDTH: f32 = 960.0;
 
 pub struct Defender;
 
@@ -103,15 +106,12 @@ fn initialize_camera(world: &mut World) {
     let mut transform = Transform::default();
     transform.set_z(1.0);
 
-    let width_half = WINDOW_WIDTH * 0.5;
-    let height_half = WINDOW_HEIGHT * 0.5;
-
     world.create_entity()
         .with(Camera::from(Projection::orthographic(
-            -width_half,
-            width_half,
-            -height_half,
-            height_half,
+            -FRAC_WIN_WIDTH_2,
+            FRAC_WIN_WIDTH_2,
+            -FRAC_WIN_HEIGHT_2,
+            FRAC_WIN_HEIGHT_2,
         )))
         .with(transform)
         .build();
@@ -132,19 +132,17 @@ fn initialize_enemies(world: &mut World) {
     // let resource = EnemyResource { material, mesh };
 
     let mut rng = rand::thread_rng();
-    let max_x = WINDOW_WIDTH / 2.0;
-    let max_y = WINDOW_HEIGHT / 2.0;
 
     world.register::<Enemy>();
     for _ in 0..5 {
         let mut transform = Transform::default();
-        let x = (rng.gen::<f32>() * WINDOW_WIDTH - max_x)
-            .min(max_x)
-            .max(-max_x);
+        let x = (rng.gen::<f32>() * WIN_WIDTH - FRAC_WIN_WIDTH_2)
+            .min(FRAC_WIN_WIDTH_2)
+            .max(-FRAC_WIN_WIDTH_2);
 
-        let y: f32 = (rng.gen::<f32>() * WINDOW_HEIGHT - max_y)
-            .min(max_y)
-            .max(-max_y);
+        let y: f32 = (rng.gen::<f32>() * WIN_HEIGHT - FRAC_WIN_HEIGHT_2)
+            .min(FRAC_WIN_HEIGHT_2)
+            .max(-FRAC_WIN_HEIGHT_2);
 
         transform.set_xyz(x, y, 0.0);
 

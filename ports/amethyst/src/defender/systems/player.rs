@@ -19,10 +19,12 @@ use amethyst::{
     input::InputHandler,
 };
 use crate::defender::{
+    config::consts::{
+        FRAC_WIN_HEIGHT_2,
+        FRAC_WIN_WIDTH_2,
+    },
     config::PlayerConfig,
     entity::{ Bullet, BulletResource, Player },
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH,
 };
 
 pub struct PlayerSystem;
@@ -101,17 +103,14 @@ impl<'s> System<'s> for PlayerSystem {
                     let player_x = transform.translation().x;
                     let player_y = transform.translation().y;
 
-                    let width_half = WINDOW_WIDTH * 0.5;
-                    let height_half = WINDOW_HEIGHT * 0.5;
-
                     let new_x = (player_x + scaled_x)
-                        .min(width_half)
-                        .max(-width_half);
+                        .min(FRAC_WIN_WIDTH_2)
+                        .max(-FRAC_WIN_WIDTH_2);
 
                     let new_y = (player_y + scaled_y)
                         // Limit the player to the window
-                        .min(height_half)
-                        .max(-height_half);
+                        .min(FRAC_WIN_HEIGHT_2)
+                        .max(-FRAC_WIN_HEIGHT_2);
 
                     transform.set_x(new_x);
                     transform.set_y(new_y);

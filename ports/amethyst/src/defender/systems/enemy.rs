@@ -13,10 +13,14 @@ use rand::prelude::*;
 use std::f32::consts::PI;
 
 use crate::defender::{
-    config::EnemyConfig,
+    config::{
+        consts::{
+            FRAC_WIN_HEIGHT_2,
+            FRAC_WIN_WIDTH_2,
+        },
+        EnemyConfig
+    },
     entity::Enemy,
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH,
 };
 
 pub struct EnemySystem;
@@ -33,9 +37,6 @@ impl<'s> System<'s> for EnemySystem {
     fn run(&mut self, (mut transforms, mut enemies, enemy_config, time): Self::SystemData) {
         let mut rng = rand::thread_rng();
 
-        let width_half = WINDOW_WIDTH * 0.5;
-        let height_half = WINDOW_HEIGHT * 0.5;
-
         for (enemy, transform) in (&mut enemies, &mut transforms).join() {
             // Knock down enemy direction counter.
             enemy.ttc -= time.delta_seconds();
@@ -50,7 +51,6 @@ impl<'s> System<'s> for EnemySystem {
             let enemy_x = transform.translation().x;
             let enemy_y = transform.translation().y;
 
-
             let x = (enemy.direction + PI / 2.0).cos();
             let x = x * enemy_config.velocity * time.delta_seconds();
 
@@ -60,12 +60,12 @@ impl<'s> System<'s> for EnemySystem {
             // TODO: Detect hitting the boundary and automatically change to the
             // opposite direction.
             let new_x = (enemy_x + x)
-                .min(width_half - enemy_config.dimensions[0])
-                .max(-width_half);
+                .min(FRAC_WIN_WIDTH_2 - enemy_config.dimensions[0])
+                .max(-FRAC_WIN_WIDTH_2);
 
             let new_y = (enemy_y + y)
-                .min(height_half - enemy_config.dimensions[1])
-                .max(-height_half);
+                .min(FRAC_WIN_HEIGHT_2 - enemy_config.dimensions[1])
+                .max(-FRAC_WIN_HEIGHT_2);
 
             transform.set_x(new_x);
             transform.set_y(new_y);

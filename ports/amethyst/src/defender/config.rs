@@ -1,5 +1,12 @@
 use serde::{ Deserialize, Serialize };
 
+pub mod consts {
+    pub const WIN_HEIGHT: f32 = 768.0;
+    pub const FRAC_WIN_HEIGHT_2: f32 = WIN_HEIGHT / 2.0;
+    pub const WIN_WIDTH: f32 = 960.0;
+    pub const FRAC_WIN_WIDTH_2: f32 = WIN_WIDTH / 2.0;
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct BulletConfig {
     pub color: [f32; 4],
