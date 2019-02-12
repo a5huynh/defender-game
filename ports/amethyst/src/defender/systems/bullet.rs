@@ -39,6 +39,7 @@ impl<'s> System<'s> for MoveBulletSystem {
                 // Remove the bullet if the ttl is <= 0.0
                 entities.delete(bullet_entity)
                     .expect("Unable to delete bullet entity");
+                continue;
             }
 
             // The direction is stored as a polar coordinate. Convert to
