@@ -1,5 +1,5 @@
 use amethyst::{
-    ecs::prelude::{ Component, DenseVecStorage },
+    ecs::prelude::{ Component, DenseVecStorage, Entity },
     renderer::{
         Material,
         MeshHandle,
@@ -75,4 +75,8 @@ impl Component for Player {
 #[derive(Debug, Default)]
 pub struct ScoreBoard {
     pub score: i32,
+}
+
+pub struct ScoreText {
+    pub text: Entity,
 }

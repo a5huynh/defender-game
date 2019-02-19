@@ -10,6 +10,7 @@ use amethyst::renderer::{
     RenderBundle,
     Stage,
 };
+use amethyst::ui::{ DrawUi, UiBundle };
 use amethyst::utils::application_root_dir;
 
 mod defender;
@@ -41,6 +42,7 @@ fn main() -> amethyst::Result<()> {
                 .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
                 .with_pass(DrawFlat2D::new())
                 .with_pass(DrawFlat::<PosTex>::new())
+                .with_pass(DrawUi::new())
         );
 
     let game_data = GameDataBuilder::default()
@@ -50,6 +52,7 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
+        .with_bundle(UiBundle::<String, String>::new())?
         // Register the systems, give it a name, and specify any dependencies for
         // that system.
         .with(systems::EnemySystem, "enemy_system", &[])

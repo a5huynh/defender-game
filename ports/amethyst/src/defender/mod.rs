@@ -1,3 +1,4 @@
+use amethyst::assets::Loader;
 use amethyst::core::transform::Transform;
 use amethyst::prelude::*;
 use amethyst::renderer::{
@@ -7,6 +8,12 @@ use amethyst::renderer::{
     Projection,
     VirtualKeyCode,
     WindowEvent,
+};
+use amethyst::ui::{
+    Anchor,
+    TtfFormat,
+    UiText,
+    UiTransform
 };
 use rand::prelude::*;
 
@@ -30,7 +37,8 @@ use entity::{
     BulletResource,
     Enemy,
     EnemyResource,
-    Player
+    Player,
+    ScoreText
 };
 
 mod render;
@@ -55,6 +63,7 @@ impl SimpleState for Defender {
         initialize_player(world);
         // Initialize resources
         initialize_bullet(world);
+        initialize_score(world);
     }
 
     fn handle_event(&mut self, _: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
@@ -187,4 +196,30 @@ fn initialize_player(world: &mut World) {
         })
         .with(player_transform)
         .build();
+}
+
+fn initialize_score(world: &mut World) {
+    let font = world.read_resource::<Loader>().load(
+        "font/PxPlus_IBM_VGA8.ttf",
+        TtfFormat,
+        Default::default(),
+        (),
+        &world.read_resource(),
+    );
+
+    let transform = UiTransform::new(
+        "Score".to_string(), Anchor::TopMiddle,
+        -50., -50., 1., 200., 50., 0,
+    );
+
+    let text = world.create_entity()
+        .with(transform)
+        .with(UiText::new(
+            font.clone(),
+            "0".to_string(),
+            [1., 1., 1., 1.],
+            50.,
+        )).build();
+
+    world.add_resource(ScoreText { text } );
 }

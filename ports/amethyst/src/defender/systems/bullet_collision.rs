@@ -5,13 +5,15 @@ use amethyst::{
         ReadExpect,
         ReadStorage,
         System,
+        Write,
         WriteStorage,
     },
+    ui::UiText,
 };
 
 use crate::defender::{
-    config::{ BulletConfig, EnemyConfig },
-    entity::{ Bullet, Enemy },
+    config::{ EnemyConfig },
+    entity::{ Bullet, Enemy, ScoreBoard, ScoreText },
 };
 
 pub struct BulletCollision;
@@ -20,12 +22,23 @@ impl<'s> System<'s> for BulletCollision {
     type SystemData = (
         ReadStorage<'s, Transform>,
         WriteStorage<'s, Bullet>,
-        ReadExpect<'s, BulletConfig>,
         WriteStorage<'s, Enemy>,
         ReadExpect<'s, EnemyConfig>,
+        // Used to update the score.
+        WriteStorage<'s, UiText>,
+        Write<'s, ScoreBoard>,
+        ReadExpect<'s, ScoreText>,
     );
 
-    fn run(&mut self, (transforms, mut bullets, _bullet_config, mut enemies, enemy_config ): Self::SystemData) {
+    fn run(&mut self, (
+        transforms,
+        mut bullets,
+        mut enemies,
+        enemy_config,
+        mut ui_text,
+        mut scoreboard,
+        score_text,
+    ): Self::SystemData) {
         // Loop through each bullet location
         for (bullet_transform, bullet) in (&transforms, &mut bullets).join() {
             let bullet_x = bullet_transform.translation().x;
@@ -48,6 +61,11 @@ impl<'s> System<'s> for BulletCollision {
                     // Destroy bullet & enemy if it's a hit.
                     bullet.ttl = 0.0;
                     enemy.is_destroyed = true;
+                    // Update the score
+                    scoreboard.score += 100;
+                    if let Some(text) = ui_text.get_mut(score_text.text) {
+                        text.text = scoreboard.score.to_string();
+                    }
                 }
             }
         }
