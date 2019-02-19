@@ -6,7 +6,7 @@ use amethyst::{
     }
 };
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Enemy {
     /// Direction this enemy is going.
     pub direction: f32,
@@ -14,16 +14,6 @@ pub struct Enemy {
     pub is_destroyed: bool,
     /// Time left til the enemy decides to change direction.
     pub ttc: f32,
-}
-
-impl Default for Enemy {
-    fn default() -> Self {
-        Enemy {
-            direction: 0.0,
-            is_destroyed: false,
-            ttc: 0.0,
-        }
-    }
 }
 
 impl Component for Enemy {
@@ -39,7 +29,7 @@ impl Component for EnemyResource {
     type Storage = DenseVecStorage<Self>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Bullet {
     /// Direction the bullet is going.
     pub direction: f32,
@@ -70,7 +60,7 @@ impl Component for BulletResource {
     type Storage = DenseVecStorage<Self>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Player {
     /// The direction the player is facing in radians.
     pub direction: f32,
@@ -80,4 +70,9 @@ pub struct Player {
 
 impl Component for Player {
     type Storage = DenseVecStorage<Self>;
+}
+
+#[derive(Debug, Default)]
+pub struct ScoreBoard {
+    pub score: i32,
 }
