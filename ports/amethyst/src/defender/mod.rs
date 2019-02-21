@@ -200,7 +200,7 @@ fn initialize_player(world: &mut World) {
 
 fn initialize_score(world: &mut World) {
     let font = world.read_resource::<Loader>().load(
-        "font/PxPlus_IBM_VGA8.ttf",
+        "resources/fonts/PxPlus_IBM_VGA8.ttf",
         TtfFormat,
         Default::default(),
         (),
@@ -208,17 +208,23 @@ fn initialize_score(world: &mut World) {
     );
 
     let transform = UiTransform::new(
-        "Score".to_string(), Anchor::TopMiddle,
-        -50., -50., 1., 200., 50., 0,
+        "Score".to_string(),
+        Anchor::TopLeft,
+        // x, y, z
+        85.0, -20.0, 1.0,
+        // width, height
+        400.0, 40.0,
+        // Tab order
+        0
     );
 
     let text = world.create_entity()
         .with(transform)
         .with(UiText::new(
             font.clone(),
-            "0".to_string(),
+            "Score: 00000".to_string(),
             [1., 1., 1., 1.],
-            50.,
+            25.,
         )).build();
 
     world.add_resource(ScoreText { text } );

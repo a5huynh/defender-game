@@ -64,7 +64,10 @@ impl<'s> System<'s> for BulletCollision {
                     // Update the score
                     scoreboard.score += 100;
                     if let Some(text) = ui_text.get_mut(score_text.text) {
-                        text.text = scoreboard.score.to_string();
+                        text.text = format!(
+                            "Score: {:05}",
+                            scoreboard.score
+                        );
                     }
                 }
             }
