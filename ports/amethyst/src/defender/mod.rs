@@ -3,12 +3,10 @@ use amethyst::core::transform::Transform;
 use amethyst::prelude::*;
 use amethyst::renderer::{
     Camera,
-    Event,
-    KeyboardInput,
     Projection,
     VirtualKeyCode,
-    WindowEvent,
 };
+use amethyst::input::is_key_down;
 use amethyst::ui::{
     Anchor,
     TtfFormat,
@@ -31,12 +29,14 @@ use config::{
     PlayerConfig,
 };
 
+pub mod data;
+use data::DefenderData;
+
 mod entity;
 use entity::{
     Bullet,
     BulletResource,
     Enemy,
-    EnemyResource,
     Player,
     ScoreText
 };
@@ -51,10 +51,15 @@ use render::{
 
 pub mod systems;
 
+mod state;
+use state::{
+    PausedMenuState
+};
+
 pub struct Defender;
 
-impl SimpleState for Defender {
-    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for Defender {
+    fn on_start(&mut self, data: StateData<DefenderData<'a, 'b>>) {
         let world = data.world;
 
         // Initialize entities that exist at the beginning.
@@ -66,27 +71,19 @@ impl SimpleState for Defender {
         initialize_score(world);
     }
 
-    fn handle_event(&mut self, _: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
+    fn update(&mut self, data: StateData<DefenderData>) -> Trans<DefenderData<'a, 'b>, StateEvent> {
+        data.data.update(&data.world, true);
+        Trans::None
+    }
+
+    fn handle_event(&mut self, _: StateData<DefenderData<'a, 'b>>, event: StateEvent) -> Trans<DefenderData<'a, 'b>, StateEvent> {
         if let StateEvent::Window(event) = &event {
-            match event {
-                Event::WindowEvent { event, .. } => {
-                    match event {
-                        WindowEvent::KeyboardInput {
-                            input: KeyboardInput {
-                                virtual_keycode: Some(VirtualKeyCode::Escape),
-                                ..
-                            },
-                            ..
-                        } => Trans::Quit,
-                        WindowEvent::CloseRequested => Trans::Quit,
-                        _ => Trans::None,
-                    }
-                },
-                _ => Trans::None,
+            if is_key_down(&event, VirtualKeyCode::Escape) {
+                return Trans::Push(Box::new(PausedMenuState));
             }
-        } else {
-            Trans::None
         }
+
+        Trans::None
     }
 }
 

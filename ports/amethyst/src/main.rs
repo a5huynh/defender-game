@@ -16,6 +16,7 @@ use amethyst::utils::application_root_dir;
 mod defender;
 use crate::defender::{
     config::DefenderConfig,
+    data::DefenderDataBuilder,
     Defender,
     systems,
 };
@@ -45,23 +46,23 @@ fn main() -> amethyst::Result<()> {
                 .with_pass(DrawUi::new())
         );
 
-    let game_data = GameDataBuilder::default()
-        .with_bundle(
+    let game_data = DefenderDataBuilder::default()
+        .with_base_bundle(
             RenderBundle::new(pipe, Some(config))
                 .with_sprite_sheet_processor()
         )?
-        .with_bundle(TransformBundle::new())?
-        .with_bundle(input_bundle)?
-        .with_bundle(UiBundle::<String, String>::new())?
+        .with_base_bundle(TransformBundle::new())?
+        .with_base_bundle(UiBundle::<String, String>::new())?
         // Register the systems, give it a name, and specify any dependencies for
         // that system.
-        .with(systems::EnemySystem, "enemy_system", &[])
-        .with(systems::PlayerSystem, "player_system", &["input_system"])
-        .with(systems::MoveBulletSystem, "bullet_system", &[])
+        .with_run_bundle(input_bundle)?
+        .with_running(systems::EnemySystem, "enemy_system", &[])
+        .with_running(systems::PlayerSystem, "player_system", &["input_system"])
+        .with_running(systems::MoveBulletSystem, "bullet_system", &[])
         // If a system has dependencies, it will be run after all of them have
         // have been run. For instance, we only want to check for bullet collisions
         // when both the enemy & bullet have finished moving.
-        .with(
+        .with_running(
             systems::BulletCollision,
             "bullet_collision_system",
             &["enemy_system", "bullet_system"]
