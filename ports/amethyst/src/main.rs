@@ -17,7 +17,7 @@ mod defender;
 use crate::defender::{
     config::DefenderConfig,
     data::DefenderDataBuilder,
-    Defender,
+    state::RunningState,
     systems,
 };
 
@@ -53,15 +53,16 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_base_bundle(TransformBundle::new())?
         .with_base_bundle(UiBundle::<String, String>::new())?
-        // Register the systems, give it a name, and specify any dependencies for
-        // that system.
+        // Register the systems, give it a name, and specify any
+        // dependencies for that system.
         .with_run_bundle(input_bundle)?
         .with_running(systems::EnemySystem, "enemy_system", &[])
         .with_running(systems::PlayerSystem, "player_system", &["input_system"])
         .with_running(systems::MoveBulletSystem, "bullet_system", &[])
-        // If a system has dependencies, it will be run after all of them have
-        // have been run. For instance, we only want to check for bullet collisions
-        // when both the enemy & bullet have finished moving.
+        // If a system has dependencies, it will be run after all of them
+        // have have been run. For instance, we only want to check for
+        // bullet collisions when both the enemy & bullet have finished
+        // moving.
         .with_running(
             systems::BulletCollision,
             "bullet_collision_system",
@@ -69,7 +70,7 @@ fn main() -> amethyst::Result<()> {
         );
 
 
-    let mut game = Application::build("./", Defender)?
+    let mut game = Application::build("./", RunningState)?
         .with_resource(game_config.bullet)
         .with_resource(game_config.enemy)
         .with_resource(game_config.game)

@@ -4,9 +4,7 @@ use amethyst::prelude::*;
 use amethyst::renderer::{
     Camera,
     Projection,
-    VirtualKeyCode,
 };
-use amethyst::input::is_key_down;
 use amethyst::ui::{
     Anchor,
     TtfFormat,
@@ -30,8 +28,6 @@ use config::{
 };
 
 pub mod data;
-use data::DefenderData;
-
 mod entity;
 use entity::{
     Bullet,
@@ -41,6 +37,7 @@ use entity::{
     ScoreText
 };
 
+pub mod state;
 mod render;
 use render::{
     create_mesh,
@@ -51,43 +48,7 @@ use render::{
 
 pub mod systems;
 
-mod state;
-use state::{
-    PausedMenuState
-};
-
-pub struct Defender;
-
-impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for Defender {
-    fn on_start(&mut self, data: StateData<DefenderData<'a, 'b>>) {
-        let world = data.world;
-
-        // Initialize entities that exist at the beginning.
-        initialize_camera(world);
-        initialize_enemies(world);
-        initialize_player(world);
-        // Initialize resources
-        initialize_bullet(world);
-        initialize_score(world);
-    }
-
-    fn update(&mut self, data: StateData<DefenderData>) -> Trans<DefenderData<'a, 'b>, StateEvent> {
-        data.data.update(&data.world, true);
-        Trans::None
-    }
-
-    fn handle_event(&mut self, _: StateData<DefenderData<'a, 'b>>, event: StateEvent) -> Trans<DefenderData<'a, 'b>, StateEvent> {
-        if let StateEvent::Window(event) = &event {
-            if is_key_down(&event, VirtualKeyCode::Escape) {
-                return Trans::Push(Box::new(PausedMenuState));
-            }
-        }
-
-        Trans::None
-    }
-}
-
-fn initialize_bullet(world: &mut World) {
+pub fn initialize_bullet(world: &mut World) {
     let (dimensions, color) = {
         let config = &world.read_resource::<BulletConfig>();
         (config.dimensions, config.color)
@@ -109,7 +70,7 @@ fn initialize_bullet(world: &mut World) {
     world.add_resource(bullet_resource.clone());
 }
 
-fn initialize_camera(world: &mut World) {
+pub fn initialize_camera(world: &mut World) {
     let mut transform = Transform::default();
     transform.set_z(1.0);
 
@@ -124,7 +85,7 @@ fn initialize_camera(world: &mut World) {
         .build();
 }
 
-fn initialize_enemies(world: &mut World) {
+pub fn initialize_enemies(world: &mut World) {
     let mut rng = rand::thread_rng();
 
     let dimensions = {
@@ -167,7 +128,7 @@ fn initialize_enemies(world: &mut World) {
     }
 }
 
-fn initialize_player(world: &mut World) {
+pub fn initialize_player(world: &mut World) {
     let mut player_transform = Transform::default();
     player_transform.set_xyz(0.0, 0.0, 0.0);
 
@@ -195,7 +156,7 @@ fn initialize_player(world: &mut World) {
         .build();
 }
 
-fn initialize_score(world: &mut World) {
+pub fn initialize_score(world: &mut World) {
     let font = world.read_resource::<Loader>().load(
         "resources/fonts/PxPlus_IBM_VGA8.ttf",
         TtfFormat,

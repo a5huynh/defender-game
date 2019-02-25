@@ -34,10 +34,18 @@ impl<'a, 'b> Default for DefenderDataBuilder<'a, 'b> {
     }
 }
 
+/// Custom game data builder based on the example provided in the Amethyst
+/// book: https://www.amethyst.rs/book/latest/game-data.html
+///
+/// The idea is to create separate dispatchers for different phases in the
+/// game. For example, we don't really want any of the enemy/player systems
+/// running while the game is paused.
 impl<'a, 'b> DefenderDataBuilder<'a, 'b> {
     pub fn new() -> Self {
         DefenderDataBuilder {
+            // Base dispatcher. These are *always* run.
             core: DispatcherBuilder::new(),
+            // Running dispatcher, these can be paused.
             running: DispatcherBuilder::new(),
         }
     }
