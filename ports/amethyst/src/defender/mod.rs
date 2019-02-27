@@ -148,10 +148,7 @@ pub fn initialize_player(world: &mut World) {
     world.create_entity()
         .with(player_mesh)
         .with(player_material)
-        .with(Player {
-            direction: 0.0,
-            weapon_cooldown: 0.0
-        })
+        .with(Player::default())
         .with(player_transform)
         .build();
 }
