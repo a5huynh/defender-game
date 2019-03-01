@@ -14,6 +14,13 @@ use amethyst::ui::{
 use rand::prelude::*;
 
 pub mod config;
+pub mod data;
+mod entity;
+mod math;
+pub mod state;
+mod render;
+pub mod systems;
+
 use config::{
     consts::{
         FRAC_WIN_HEIGHT_2,
@@ -27,8 +34,6 @@ use config::{
     PlayerConfig,
 };
 
-pub mod data;
-mod entity;
 use entity::{
     Bullet,
     BulletResource,
@@ -37,16 +42,12 @@ use entity::{
     ScoreText
 };
 
-pub mod state;
-mod render;
 use render::{
     create_mesh,
     create_material,
     generate_rectangle_vertices,
     generate_triangle_vertices,
 };
-
-pub mod systems;
 
 pub fn initialize_bullet(world: &mut World) {
     let (dimensions, color) = {

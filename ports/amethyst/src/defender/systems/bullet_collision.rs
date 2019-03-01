@@ -14,6 +14,7 @@ use amethyst::{
 use crate::defender::{
     config::{ EnemyConfig },
     entity::{ Bullet, Enemy, ScoreBoard, ScoreText },
+    math::{ point_in_rect },
 };
 
 pub struct BulletCollision;
@@ -73,8 +74,4 @@ impl<'s> System<'s> for BulletCollision {
             }
         }
     }
-}
-
-fn point_in_rect(x: f32, y: f32, left: f32, bottom: f32, right: f32, top: f32) -> bool {
-    x >= left && x <= right && y >= bottom && y <= top
 }
