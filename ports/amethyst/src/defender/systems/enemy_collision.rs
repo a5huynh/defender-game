@@ -5,13 +5,19 @@ use amethyst:: {
         ReadExpect,
         ReadStorage,
         System,
+        Write,
         WriteStorage,
     },
 };
 
 use crate::defender::{
     config::{ EnemyConfig, PlayerConfig },
-    entity::{ Enemy, Player },
+    entity::{
+        CurrentPlayerState,
+        Enemy,
+        Player,
+        PlayerState,
+    },
     math::{ rect_in_rect },
 };
 
@@ -20,22 +26,23 @@ pub struct EnemyCollision;
 impl<'s> System<'s> for EnemyCollision {
     type SystemData = (
         ReadStorage<'s, Transform>,
-        WriteStorage<'s, Enemy>,
+        ReadStorage<'s, Enemy>,
         ReadExpect<'s, EnemyConfig>,
         WriteStorage<'s, Player>,
         ReadExpect<'s, PlayerConfig>,
+        Write<'s, PlayerState>,
     );
 
     fn run(&mut self, (
         transforms,
-        mut enemies,
+        enemies,
         enemy_config,
         mut players,
-        player_config
+        player_config,
+        mut player_state,
     ): Self::SystemData) {
         // Loop through each enemy and each player location
-        for (enemy_transform, _enemy) in (&transforms, &mut enemies).join() {
-
+        for (enemy_transform, _enemy) in (&transforms, &enemies).join() {
             // Determine whether we've collided
             let enemy_x = enemy_transform.translation().x;
             let enemy_y = enemy_transform.translation().y;
@@ -46,20 +53,17 @@ impl<'s> System<'s> for EnemyCollision {
                 let player_y = player_transform.translation().y;
 
                 if rect_in_rect(
-                    enemy_x - enemy_config.dimensions[0],
-                    enemy_y - enemy_config.dimensions[1],
-                    enemy_x + enemy_config.dimensions[0],
-                    enemy_y + enemy_config.dimensions[1],
-                    player_x - player_config.dimensions[0],
-                    player_y - player_config.dimensions[1],
-                    player_x + player_config.dimensions[0],
-                    player_y + player_config.dimensions[1],
+                    enemy_x,
+                    enemy_y,
+                    enemy_config.dimensions[0],
+                    enemy_config.dimensions[1],
+                    player_x,
+                    player_y,
+                    player_config.dimensions[0],
+                    player_config.dimensions[1],
                 ) {
-                    println!(
-                        "COLLISION! {} {} {} {}",
-                        enemy_x, enemy_y,
-                        player_x, player_y
-                    );
+                    // Set the dead flag on the player.
+                    player_state.current = CurrentPlayerState::DEAD;
                 }
             }
         }

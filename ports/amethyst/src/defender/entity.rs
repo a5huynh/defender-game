@@ -20,14 +20,14 @@ impl Component for Enemy {
     type Storage = DenseVecStorage<Self>;
 }
 
-pub struct EnemyResource {
-    pub material: Material,
-    pub mesh: MeshHandle,
-}
-
-impl Component for EnemyResource {
-    type Storage = DenseVecStorage<Self>;
-}
+// pub struct EnemyResource {
+//     pub material: Material,
+//     pub mesh: MeshHandle,
+// }
+//
+// impl Component for EnemyResource {
+//     type Storage = DenseVecStorage<Self>;
+// }
 
 #[derive(Debug, Default)]
 pub struct Bullet {
@@ -79,4 +79,21 @@ pub struct ScoreBoard {
 
 pub struct ScoreText {
     pub text: Entity,
+}
+
+pub enum CurrentPlayerState {
+    ALIVE,
+    DEAD,
+}
+
+pub struct PlayerState {
+    pub current: CurrentPlayerState,
+}
+
+impl Default for PlayerState {
+    fn default() -> Self {
+        PlayerState {
+            current: CurrentPlayerState::ALIVE
+        }
+    }
 }
