@@ -67,7 +67,13 @@ fn main() -> amethyst::Result<()> {
             systems::BulletCollision,
             "bullet_collision_system",
             &["enemy_system", "bullet_system"]
-        );
+        )
+        .with_running(
+            systems::EnemyCollision,
+            "enemy_collision_system",
+            &["enemy_system", "player_system"]
+        )
+;
 
 
     let mut game = Application::build("./", RunningState)?
