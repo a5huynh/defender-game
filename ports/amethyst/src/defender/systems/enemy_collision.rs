@@ -55,12 +55,10 @@ impl<'s> System<'s> for EnemyCollision {
                 if rect_in_rect(
                     enemy_x,
                     enemy_y,
-                    enemy_config.dimensions[0],
-                    enemy_config.dimensions[1],
+                    enemy_config.dimensions,
                     player_x,
                     player_y,
-                    player_config.dimensions[0],
-                    player_config.dimensions[1],
+                    player_config.dimensions,
                 ) {
                     // Set the dead flag on the player.
                     player_state.current = CurrentPlayerState::DEAD;

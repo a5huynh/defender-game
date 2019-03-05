@@ -4,15 +4,15 @@ pub fn point_in_rect(x: f32, y: f32, left: f32, bottom: f32, right: f32, top: f3
     x >= left && x <= right && y >= bottom && y <= top
 }
 
-/// Determine whether the rect defined by (l1, b1, r1, t2) intersects with the
-/// rect defined by (l2, b2, r2, t2).
+/// Determine whether the rect defined by (x, y, [w,h]) intersects with the
+/// rect defined by (x2, y2, [w2, h2]).
 pub fn rect_in_rect(
-    x_a: f32, y_a: f32, width_a: f32, height_a: f32,
-    x_b: f32, y_b: f32, width_b: f32, height_b: f32
+    x_a: f32, y_a: f32, dim_a: [f32; 2],
+    x_b: f32, y_b: f32, dim_b: [f32; 2],
 ) -> bool {
     // If the rects are intersecting, the gap will be less than 0.
-    (x_a - x_b).abs() < (width_a + width_b) / 2.0 &&
-    (y_a - y_b).abs() < (height_a + height_b) / 2.0
+    (x_a - x_b).abs() < (dim_a[0] + dim_b[0]) / 2.0 &&
+    (y_a - y_b).abs() < (dim_a[1] + dim_b[1]) / 2.0
 }
 
 
@@ -37,35 +37,20 @@ mod tests {
     #[test]
     fn test_rect_in_rect() {
         // Intersecting boxes.
-        let (x_a, y_a, width_a, height_a) = (0.0, 0.0, 10.0, 10.0);
-        let (x_b, y_b, width_b, height_b) = (5.0, 5.0, 10.0, 10.0);
+        let (x_a, y_a, dim_a) = (0.0, 0.0, [10.0, 10.0]);
+        let (x_b, y_b, dim_b) = (5.0, 5.0, [10.0, 10.0]);
 
-        assert!(
-            rect_in_rect(
-                x_a, y_a, width_a, height_a,
-                x_b, y_b, width_b, height_b
-            )
-        );
+        assert!(rect_in_rect(x_a, y_a, dim_a, x_b, y_b, dim_b));
 
-        let (x_a, y_a, width_a, height_a) = (0.0, 0.0, 5.0, 5.0);
-        let (x_b, y_b, width_b, height_b) = (0.0, 2.5, 5.0, 5.0);
+        let (x_a, y_a, dim_a) = (0.0, 0.0, [5.0, 5.0]);
+        let (x_b, y_b, dim_b) = (0.0, 2.5, [5.0, 5.0]);
 
-        assert!(
-            rect_in_rect(
-                x_a, y_a, width_a, height_a,
-                x_b, y_b, width_b, height_b
-            )
-        );
+        assert!(rect_in_rect(x_a, y_a, dim_a, x_b, y_b, dim_b));
 
         // non-intersecting boxes.
-        let (x_a, y_a, width_a, height_a) = (0.0, 0.0, 5.0, 5.0);
-        let (x_b, y_b, width_b, height_b) = (10.0, 10.0, 5.0, 5.0);
+        let (x_a, y_a, dim_a) = (0.0, 0.0, [5.0, 5.0]);
+        let (x_b, y_b, dim_b) = (10.0, 10.0, [5.0, 5.0]);
 
-        assert!(
-            !rect_in_rect(
-                x_a, y_a, width_a, height_a,
-                x_b, y_b, width_b, height_b
-            )
-        );
+        assert!(!rect_in_rect(x_a, y_a, dim_a, x_b, y_b, dim_b));
     }
 }
