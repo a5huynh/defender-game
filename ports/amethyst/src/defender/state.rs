@@ -66,17 +66,8 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
             CurrentPlayerState::RESET => {
                 // Reset game state
                 set_player_state(world, CurrentPlayerState::ALIVE);
-                // Remove existing enemies and re-initialize.
-                {
-                    let enemies = world.read_storage::<Enemy>();
-                    let entities = world.entities();
-                    for (_enemy, entity) in (&enemies, &entities).join() {
-                        entities.delete(entity)
-                            .expect("unable to delete enemy entity");
-                    }
-                }
 
-                Enemy::initialize(world);
+                Enemy::reset(world);
 
                 // Reset player position and attributes
                 {

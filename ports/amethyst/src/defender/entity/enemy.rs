@@ -3,6 +3,7 @@ use amethyst::{
     ecs::prelude::{
         Component,
         DenseVecStorage,
+        Join
     },
     prelude::*
 };
@@ -41,6 +42,8 @@ impl Component for Enemy {
 }
 
 impl Enemy {
+    /// Initialize the enemies in the game. Assumes a completely empty
+    /// world with no existing enemies.
     pub fn initialize(world: &mut World) {
         let mut rng = rand::thread_rng();
 
@@ -82,6 +85,23 @@ impl Enemy {
                 .with(transform)
                 .build();
         }
+    }
+
+    /// Remove all existing enemies from the state.
+    pub fn remove_all(world: &mut World) {
+        let enemies = world.read_storage::<Enemy>();
+        let entities = world.entities();
+        for (_enemy, entity) in (&enemies, &entities).join() {
+            entities.delete(entity)
+                .expect("unable to delete enemy entity");
+        }
+    }
+
+    /// Utility function that removes all existing enemies from the game
+    /// and re-initializes them
+    pub fn reset(world: &mut World) {
+        Enemy::remove_all(world);
+        Enemy::initialize(world);
     }
 }
 
