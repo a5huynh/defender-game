@@ -8,6 +8,8 @@ use amethyst::{
 
 mod enemy;
 pub use enemy::*;
+mod player;
+pub use player::*;
 
 #[derive(Debug, Default)]
 pub struct Bullet {
@@ -37,18 +39,6 @@ pub struct BulletResource {
 }
 
 impl Component for BulletResource {
-    type Storage = DenseVecStorage<Self>;
-}
-
-#[derive(Debug, Default)]
-pub struct Player {
-    /// The direction the player is facing in radians.
-    pub direction: f32,
-    /// Current weapon cooldown timer
-    pub weapon_cooldown: f32,
-}
-
-impl Component for Player {
     type Storage = DenseVecStorage<Self>;
 }
 

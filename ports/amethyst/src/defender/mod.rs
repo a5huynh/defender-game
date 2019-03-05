@@ -26,13 +26,11 @@ use config::{
         FRAC_WIN_WIDTH_2,
     },
     BulletConfig,
-    PlayerConfig,
 };
 
 use entity::{
     Bullet,
     BulletResource,
-    Player,
     ScoreText
 };
 
@@ -40,7 +38,6 @@ use render::{
     create_mesh,
     create_material,
     generate_rectangle_vertices,
-    generate_triangle_vertices,
 };
 
 pub fn initialize_bullet(world: &mut World) {
@@ -77,31 +74,6 @@ pub fn initialize_camera(world: &mut World) {
             FRAC_WIN_HEIGHT_2,
         )))
         .with(transform)
-        .build();
-}
-
-pub fn initialize_player(world: &mut World) {
-    let mut player_transform = Transform::default();
-    player_transform.set_xyz(0.0, 0.0, 0.0);
-
-    let (dimensions, color) = {
-        let config = &world.read_resource::<PlayerConfig>();
-        (config.dimensions, config.color)
-    };
-
-    let player_mesh = create_mesh(
-        world,
-        generate_triangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
-    );
-
-    let player_material = create_material(world, color);
-
-    // Create player triangle
-    world.create_entity()
-        .with(player_mesh)
-        .with(player_material)
-        .with(Player::default())
-        .with(player_transform)
         .build();
 }
 

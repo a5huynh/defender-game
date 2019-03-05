@@ -1,8 +1,4 @@
 use amethyst::assets::Loader;
-use amethyst::core::{
-    nalgebra::{ geometry::UnitQuaternion, Vector3 },
-    transform::Transform,
-};
 use amethyst::ecs::prelude::{
     Entity,
     Join
@@ -27,7 +23,6 @@ use crate::defender::{
     },
     initialize_bullet,
     initialize_camera,
-    initialize_player,
     initialize_score,
 };
 
@@ -52,7 +47,7 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
         // Initialize entities that exist at the beginning.
         initialize_camera(world);
         Enemy::initialize(world);
-        initialize_player(world);
+        Player::initialize(world);
         // Initialize resources
         initialize_bullet(world);
         initialize_score(world);
@@ -66,27 +61,10 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
             CurrentPlayerState::RESET => {
                 // Reset game state
                 set_player_state(world, CurrentPlayerState::ALIVE);
-
+                // Reset game enemies.
                 Enemy::reset(world);
-
-                // Reset player position and attributes
-                {
-                    let mut players = world.write_storage::<Player>();
-                    let mut transforms = world.write_storage::<Transform>();
-                    for (player, transform) in (&mut players, &mut transforms).join() {
-                        player.weapon_cooldown = 0.0;
-                        player.direction = 0.0;
-
-                        transform.set_x(0.0);
-                        transform.set_y(0.0);
-                        transform.set_rotation(
-                            UnitQuaternion::from_axis_angle(
-                                &Vector3::z_axis(),
-                                0.0
-                            )
-                        );
-                    }
-                }
+                // Reset player position and attributes.
+                Player::reset(world);
             },
             _ => ()
         }
