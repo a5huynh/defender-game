@@ -81,9 +81,11 @@ pub struct ScoreText {
     pub text: Entity,
 }
 
+#[derive(Clone)]
 pub enum CurrentPlayerState {
     ALIVE,
     DEAD,
+    RESET,
 }
 
 pub struct PlayerState {
