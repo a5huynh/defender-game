@@ -6,28 +6,8 @@ use amethyst::{
     }
 };
 
-#[derive(Debug, Default)]
-pub struct Enemy {
-    /// Direction this enemy is going.
-    pub direction: f32,
-    /// Was this enemy destroyed? If so, remove from game.
-    pub is_destroyed: bool,
-    /// Time left til the enemy decides to change direction.
-    pub ttc: f32,
-}
-
-impl Component for Enemy {
-    type Storage = DenseVecStorage<Self>;
-}
-
-// pub struct EnemyResource {
-//     pub material: Material,
-//     pub mesh: MeshHandle,
-// }
-//
-// impl Component for EnemyResource {
-//     type Storage = DenseVecStorage<Self>;
-// }
+mod enemy;
+pub use enemy::*;
 
 #[derive(Debug, Default)]
 pub struct Bullet {

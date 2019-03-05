@@ -27,7 +27,6 @@ use crate::defender::{
     },
     initialize_bullet,
     initialize_camera,
-    initialize_enemies,
     initialize_player,
     initialize_score,
 };
@@ -52,7 +51,7 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
 
         // Initialize entities that exist at the beginning.
         initialize_camera(world);
-        initialize_enemies(world);
+        Enemy::initialize(world);
         initialize_player(world);
         // Initialize resources
         initialize_bullet(world);
@@ -77,7 +76,7 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
                     }
                 }
 
-                initialize_enemies(world);
+                Enemy::initialize(world);
 
                 // Reset player position and attributes
                 {

@@ -11,11 +11,10 @@ use amethyst::ui::{
     UiText,
     UiTransform
 };
-use rand::prelude::*;
 
 pub mod config;
 pub mod data;
-mod entity;
+pub mod entity;
 mod math;
 pub mod state;
 mod render;
@@ -25,19 +24,14 @@ use config::{
     consts::{
         FRAC_WIN_HEIGHT_2,
         FRAC_WIN_WIDTH_2,
-        WIN_HEIGHT,
-        WIN_WIDTH,
     },
     BulletConfig,
-    EnemyConfig,
-    GameConfig,
     PlayerConfig,
 };
 
 use entity::{
     Bullet,
     BulletResource,
-    Enemy,
     Player,
     ScoreText
 };
@@ -84,49 +78,6 @@ pub fn initialize_camera(world: &mut World) {
         )))
         .with(transform)
         .build();
-}
-
-pub fn initialize_enemies(world: &mut World) {
-    let mut rng = rand::thread_rng();
-
-    let dimensions = {
-        let config = &world.read_resource::<EnemyConfig>();
-        config.dimensions
-    };
-
-    let num_enemies = {
-        let config = &world.read_resource::<GameConfig>();
-        config.enemy_count
-    };
-
-    let mesh = create_mesh(
-        world,
-        generate_rectangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
-    );
-
-    let material = create_material(world, [1.0, 0.0, 0.0, 1.0]);
-    // let resource = EnemyResource { material, mesh };
-
-    world.register::<Enemy>();
-    for _ in 0..num_enemies {
-        let mut transform = Transform::default();
-        let x = (rng.gen::<f32>() * WIN_WIDTH - FRAC_WIN_WIDTH_2)
-            .min(FRAC_WIN_WIDTH_2)
-            .max(-FRAC_WIN_WIDTH_2);
-
-        let y: f32 = (rng.gen::<f32>() * WIN_HEIGHT - FRAC_WIN_HEIGHT_2)
-            .min(FRAC_WIN_HEIGHT_2)
-            .max(-FRAC_WIN_HEIGHT_2);
-
-        transform.set_xyz(x, y, 0.0);
-
-        world.create_entity()
-            .with(mesh.clone())
-            .with(material.clone())
-            .with(Enemy::default())
-            .with(transform)
-            .build();
-    }
 }
 
 pub fn initialize_player(world: &mut World) {
