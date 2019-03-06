@@ -1,7 +1,7 @@
 use amethyst::assets::Loader;
 use amethyst::ecs::prelude::{
     Entity,
-    Join
+    Write,
 };
 use amethyst::prelude::*;
 use amethyst::renderer::VirtualKeyCode;
@@ -215,22 +215,9 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for DeadState {
         }
 
         // Set the player state into "RESET" mode.
-        {
-            let mut player_state = world.write_resource::<PlayerState>();
+        world.exec(|(mut player_state,): (Write<PlayerState>,)| {
             player_state.current = CurrentPlayerState::RESET;
-        }
-
-        // Remove
-        {
-            let enemies = world.read_storage::<Enemy>();
-            let entities = world.entities();
-            for (_enemy, entity) in (&enemies, &entities).join() {
-                entities.delete(entity)
-                    .expect("unable to delete enemy entity");
-            }
-        }
-
-        world.maintain();
+        });
     }
 
     fn update(&mut self, data: StateData<DefenderData<'a, 'b>>) -> Trans<DefenderData<'a, 'b>, StateEvent> {
