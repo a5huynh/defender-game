@@ -16,12 +16,12 @@ use amethyst::ui::{
 use crate::defender::{
     data::DefenderData,
     entity::{
+        Bullet,
         CurrentPlayerState,
         Enemy,
         Player,
         PlayerState
     },
-    initialize_bullet,
     initialize_camera,
     initialize_score,
 };
@@ -49,7 +49,7 @@ impl<'a, 'b> State<DefenderData<'a, 'b>, StateEvent> for RunningState {
         Enemy::initialize(world);
         Player::initialize(world);
         // Initialize resources
-        initialize_bullet(world);
+        Bullet::initialize(world);
         initialize_score(world);
     }
 

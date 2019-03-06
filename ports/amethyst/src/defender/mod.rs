@@ -25,42 +25,10 @@ use config::{
         FRAC_WIN_HEIGHT_2,
         FRAC_WIN_WIDTH_2,
     },
-    BulletConfig,
 };
-
 use entity::{
-    Bullet,
-    BulletResource,
     ScoreText
 };
-
-use render::{
-    create_mesh,
-    create_material,
-    generate_rectangle_vertices,
-};
-
-pub fn initialize_bullet(world: &mut World) {
-    let (dimensions, color) = {
-        let config = &world.read_resource::<BulletConfig>();
-        (config.dimensions, config.color)
-    };
-
-    let bullet_mesh = create_mesh(
-        world,
-        generate_rectangle_vertices(0.0, 0.0, dimensions[0], dimensions[1])
-    );
-
-    let bullet_material = create_material(world, color);
-    let bullet_resource = BulletResource {
-        material: bullet_material,
-        mesh: bullet_mesh
-    };
-
-    // Register bullet entity & add resource so we can use it later.
-    world.register::<Bullet>();
-    world.add_resource(bullet_resource.clone());
-}
 
 pub fn initialize_camera(world: &mut World) {
     let mut transform = Transform::default();
