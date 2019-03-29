@@ -1,0 +1,9 @@
+(
+    axes: {
+        "player_x": Emulated(pos: Key(Right), neg: Key(Left)),
+        "player_y": Emulated(pos: Key(Up), neg: Key(Down)),
+    },
+    actions: {
+        "fire": [ [Key(Space)] ],
+    },
+)
