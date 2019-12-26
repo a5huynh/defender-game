@@ -4,7 +4,7 @@ This is a very basic 2D game that I built in order to learn and build
 a somewhat complex program with Rust.
 
 You can check out my write-up of the experience here:
-https://a5huynh.github.io/2018/02/02/adventures-in-rust.html
+https://a5huynh.github.io/posts/2018/adventures-in-rust/
 
 The version that was developed for that blog post is tagged as [v0.1.0](https://github.com/a5huynh/defender-game/releases/tag/0.1.0)
 
