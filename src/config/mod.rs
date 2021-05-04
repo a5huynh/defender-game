@@ -16,7 +16,7 @@ impl GraphicsConfig {
         // Change this to OpenGL::V2_1 if not working.
         let opengl = OpenGL::V3_3;
         // Setup a new window
-        let size = Size { width: width, height: height };
+        let size = Size { width, height };
         let settings: Window = WindowSettings::new(title, [width, height])
             // Sets the OpenGL version
             .opengl(opengl)

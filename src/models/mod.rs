@@ -12,7 +12,7 @@ pub mod player;
 pub trait GameObject {
     // Used to determine whether one object has collided with another
     // object.
-    fn collides(&self, other: &GameObject) -> bool {
+    fn collides(&self, other: &dyn GameObject) -> bool {
         // Two circles intersect if the distance between their centers is
         // between the sum and the difference of their radii.
         // TODO: Bounding boxes might be more efficient.

@@ -33,7 +33,7 @@ fn main() {
 
         // Handle any updates
         if let Some(u) = e.update_args() {
-            app.update(&u);
+            app.update(u);
         }
     }
 }

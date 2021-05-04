@@ -27,7 +27,7 @@ enum GameStatus {
     // Player died
     Died,
     // Player won!
-    Win
+    Win,
 }
 
 struct GameState {
@@ -64,7 +64,7 @@ impl<'a> App<'a> {
             debug_mode: false,
             fire_bullets: false,
             fire_cooldown: 0.0,
-            game_status: GameStatus::Normal
+            game_status: GameStatus::Normal,
         };
 
         // Load font(s) used in the game.
@@ -89,8 +89,8 @@ impl<'a> App<'a> {
     }
 
     pub fn input(&mut self, button: &Button, is_press: bool) {
-        if is_press {
-            if let Button::Keyboard(key) = *button {
+        match (&button, is_press) {
+            (Button::Keyboard(key), true) => {
                 match key {
                     Key::Up => self.player.start_move(geom::Direction::NORTH),
                     Key::Down => self.player.start_move(geom::Direction::SOUTH),
@@ -101,12 +101,12 @@ impl<'a> App<'a> {
                             self.state.fire_cooldown = FIRE_COOLDOWN;
                             self.state.fire_bullets = true;
                         }
-                    },
+                    }
                     // Toggle debug mode.
                     Key::D => {
                         self.state.debug_mode = !self.state.debug_mode;
                         println!("Debug mode: {}", self.state.debug_mode);
-                    },
+                    }
                     // Reset game
                     Key::Return => {
                         match self.state.game_status {
@@ -118,14 +118,16 @@ impl<'a> App<'a> {
                     _ => (),
                 }
             }
-        } else if let Button::Keyboard(key) = *button {
-            match key {
-                Key::Up => self.player.stop_move(geom::Direction::NORTH),
-                Key::Down => self.player.stop_move(geom::Direction::SOUTH),
-                Key::Left => self.player.stop_move(geom::Direction::WEST),
-                Key::Right => self.player.stop_move(geom::Direction::EAST),
-                _ => (),
+            (Button::Keyboard(key), false) => {
+                match key {
+                    Key::Up => self.player.stop_move(geom::Direction::NORTH),
+                    Key::Down => self.player.stop_move(geom::Direction::SOUTH),
+                    Key::Left => self.player.stop_move(geom::Direction::WEST),
+                    Key::Right => self.player.stop_move(geom::Direction::EAST),
+                    _ => (),
+                }
             }
+            _ => {}
         }
     }
 
@@ -154,11 +156,11 @@ impl<'a> App<'a> {
                 GameStatus::Died => {
                     draw_center("YOU DIED!", 32, [f64::from(size.width), f64::from(size.height)], gc, &c, gl);
                     return;
-                },
+                }
                 GameStatus::Win => {
                     draw_center("YOU WIN!", 32, [f64::from(size.width), f64::from(size.height)], gc, &c, gl);
                     return;
-                },
+                }
                 _ => (),
             }
 
@@ -185,7 +187,7 @@ impl<'a> App<'a> {
 
     // Update any animation, etc.
     // dt is the delta since the last update.
-    pub fn update(&mut self, args: &UpdateArgs) {
+    pub fn update(&mut self, args: UpdateArgs) {
         match self.state.game_status {
             GameStatus::Died => return,
             GameStatus::Win => return,
